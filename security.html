@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Security Monitor</title>
+  <link rel="stylesheet" href="security.css" />
+</head>
+<body>
+  <div class="header">
+    <button class="back-btn" onclick="window.history.back()">← Back</button>
+    <h1>Security Monitor</h1>
+  </div>
+
+  <div class="map-container">
+    <div id="map"></div>
+  </div>
+
+  <div class="location-info">
+    <h2>Movement Logs</h2>
+    <div id="logsPanel" class="directions-panel active">
+      <div class="floor-note">Live tracking of user positions.</div>
+    </div>
+    <button onclick="downloadCSV()" style="margin-top: 1rem; padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer;">Download Logs</button>
+  </div>
+
+  <script>
+    let map;
+    let userMarker;
+    let movementLog = [];
+    const logsPanel = document.getElementById('logsPanel');
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 18,
+        center: { lat: 0, lng: 0 },
+        mapTypeId: "roadmap",
+        mapTypeControl: false
+      });
+
+      userMarker = new google.maps.Marker({
+        map,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 8,
+          fillColor: "#4E0911",
+          fillOpacity: 1,
+          strokeColor: "#fff",
+          strokeWeight: 2,
+        },
+      });
+
+      trackUserLocation();
+    }
+
+    function trackUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const pos = { lat: latitude, lng: longitude };
+            userMarker.setPosition(pos);
+            map.setCenter(pos);
+            logMovement(pos);
+          },
+          (err) => {
+            alert("Error getting location: " + err.message);
+          },
+          {
+            enableHighAccuracy: true,
+            maximumAge: 1000,
+            timeout: 5000,
+          }
+        );
+      } else {
+        alert("Geolocation is not supported by your browser.");
+      }
+    }
+
+    function logMovement(position) {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      const locationString = `Lat: ${position.lat.toFixed(5)}, Lng: ${position.lng.toFixed(5)}`;
+
+      if (
+        movementLog.length === 0 ||
+        getDistance(movementLog[movementLog.length - 1].position, position) > 10
+      ) {
+        movementLog.push({ time, position });
+
+        const logEntry = document.createElement("div");
+        logEntry.className = "step";
+        logEntry.innerHTML = `
+          <div class="step-number">${movementLog.length}</div>
+          <div>
+            <strong>${time}</strong><br>
+            ${locationString}
+          </div>
+        `;
+        logsPanel.insertBefore(logEntry, logsPanel.querySelector(".floor-note"));
+      }
+    }
+
+    function getDistance(p1, p2) {
+      const R = 6371e3;
+      const φ1 = p1.lat * Math.PI/180, φ2 = p2.lat * Math.PI/180;
+      const Δφ = (p2.lat - p1.lat) * Math.PI/180;
+      const Δλ = (p2.lng - p1.lng) * Math.PI/180;
+      const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                Math.cos(φ1) * Math.cos(φ2) *
+                Math.sin(Δλ/2) * Math.sin(Δλ/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    function downloadCSV() {
+      let csv = 'Time,Latitude,Longitude\n';
+      movementLog.forEach(log => {
+        csv += `${log.time},${log.position.lat},${log.position.lng}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      link.setAttribute("href", URL.createObjectURL(blob));
+      link.setAttribute("download", "movement_logs.csv");
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvxkXLxM5VSnaR6JYmUB2VvWjmibMNMSE&callback=initMap">
+  </script>
+</body>
+</html>
