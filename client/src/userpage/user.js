@@ -62,10 +62,47 @@
     };
 
     const buildingLabels = {
-        "SCAS": { 
+        "centralLibrary": { 
             lat: 12.873236621715348, lng: 80.2189667038578, 
-            name: "Central library",
+            name: "Central library"
         },
+        "advancedStudies":{
+            lat: 12.871640, lng: 80.225520, 
+            name: "Sathyabama Centre for Advanced Studies"
+        },
+        "startupCell":{
+            lat: 12.873959, lng: 80.219224, 
+            name: "Startup cell"
+        },
+        "irc":{
+            lat: 12.872815, lng: 80.221325, 
+            name: "International Research Centre"
+        },
+        "orp":{
+            lat: 12.873758, lng: 80.218891, 
+            name: "Ocean Research Park"
+        },
+        "block1":{
+            lat: 12.873886, lng: 80.221469,
+             name: "Block 1"
+        },
+        "remibai":{
+            lat: 12.874384, lng: 80.219016,
+            name: "Remibai Auditorium"
+        },
+        "indoorStadium":{
+            lat: 12.871401, lng: 80.220580, 
+            name: "Indoor Stadium"
+        },
+        "boysHostel":{
+            lat: 12.871159, lng: 80.219749, 
+            name: "Boys Hostel"
+        },
+        "girlsHostel":{
+            lat: 12.874591, lng: 80.217833,
+            name: "Girls Hostel"
+        }
+
     };
 
     const campusConnections = [
