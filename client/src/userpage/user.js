@@ -147,13 +147,12 @@ function addBuildingLabels() {
     for (const key in buildingLabels) {
         const label = buildingLabels[key];
 
-        // Create a custom label marker
         L.marker([label.lat, label.lng], {
             icon: L.divIcon({
                 className: 'building-label',
                 html: `<div class="building-label-text">${label.name}</div>`,
-                iconSize: [150, 40], // Adjust based on text length
-                iconAnchor: [75, 20], // Center the label
+                iconSize: [150, 40],
+                iconAnchor: [75, 20],
                 popupAnchor: [0, -20]
             }),
             zIndexOffset: 500,
