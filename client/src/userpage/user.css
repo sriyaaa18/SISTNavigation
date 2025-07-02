@@ -447,26 +447,19 @@ body {
     box-sizing: border-box; /* Include padding in width calculation */
 }
 
-#stepsContainer {
-    padding: 10px;
-    overflow-y: auto;
-    max-height: 300px;
-}
-
 .step {
     display: flex;
     align-items: flex-start;
     margin-bottom: 15px;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
 }
 
 .step-number {
-    width: 30px;
-    height: 30px;
     background-color: #4E0911;
     color: white;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -484,4 +477,12 @@ body {
     font-size: 0.8rem;
     color: #666;
     margin-top: 5px;
+}
+
+.total-distance {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 2px solid #4E0911;
+    font-weight: bold;
+    text-align: center;
 }
