@@ -27,25 +27,151 @@ const campusNodes = {
     "9": { lat: 12.872148, lng: 80.222040, name: "Node 9" },
     "10": { lat: 12.872250, lng: 80.221425, name: "Node 10" },
     "11": { lat: 12.871329, lng: 80.221065, name: "Node 11" },
-    "12": { lat: 12.871640, lng: 80.225520, name: "Advanced Block" },
+    "12": { lat: 12.871640, lng: 80.225520, name: "Sathyabama Centre for Advanced Studies" },
     "13": { lat: 12.871021, lng: 80.225088, name: "Node 13" },
     "14": { lat: 12.870956, lng: 80.225451, name: "Node 14" },
     "15": { lat: 12.870748, lng: 80.225029, name: "Node 15" },
+    "16": { lat: 12.873959, lng: 80.219224, name: "Startup cell" },
+    "17": { lat: 12.873543, lng: 80.219277, name: "Central Library" },
+    "18": { lat: 12.872815, lng: 80.221325, name: "International Research Centre" },
+    "19": { lat: 12.873758, lng: 80.218891, name: "Ocean Research Park" },
+    "20": { lat: 12.873886, lng: 80.221469, name: "Block 1" },
+    "21": { lat: 12.874384, lng: 80.219016, name: "Remibai Auditorium" },
+    "22": { lat: 12.871401, lng: 80.220580, name: "Indoor Stadium" },
+    "23": { lat: 12.871159, lng: 80.219749, name: "Boys Hostel" },
+    "24": { lat: 12.874591, lng: 80.217833, name: "Girls Hostel" },
+    "25": { lat: 12.8708525, lng: 80.2238500, name: "Node 25" },
+    "26": { lat: 12.8705946, lng: 80.2208339, name: "Node 26" },
+    "27": { lat: 12.8715846, lng: 80.2199032, name: "Node 27" },
+    "28": { lat: 12.8725371, lng: 80.2201037, name: "Node 28" },
+    "29": { lat: 12.8727672, lng: 80.2191200, name: "Node 29" },
+    "30": { lat: 12.8728897, lng: 80.2190368, name: "Node 30" },
+    "31": { lat: 12.8732058, lng: 80.2175532, name: "Node 31" },
+    "32": { lat: 12.8742837, lng: 80.2177594, name: "Node 32" },
+    "33": { lat: 12.8743942, lng: 80.2178919, name: "Node 33" },
+    "34": { lat: 12.8741321, lng: 80.2189889, name: "Node 34" },
+    "35": { lat: 12.8738889, lng: 80.2192336, name: "Node 35" },
+    "36": { lat: 12.8733712, lng: 80.2216667, name: "Node 36" },
+    "37": { lat: 12.8734738, lng: 80.2217670, name: "Node 37" },
+    "38": { lat: 12.8749894, lng: 80.2216946, name: "Node 38" }
+};
+const buildingLabels = {
+    "centralLibrary": {
+        lat: 12.873236621715348, lng: 80.2189667038578,
+        name: "Central library"
+    },
+    "advancedStudies": {
+        lat: 12.871640, lng: 80.225520,
+        name: "Sathyabama Centre for Advanced Studies"
+    },
+    "startupCell": {
+        lat: 12.873959, lng: 80.219224,
+        name: "Startup cell"
+    },
+    "irc": {
+        lat: 12.872815, lng: 80.221325,
+        name: "International Research Centre"
+    },
+    "orp": {
+        lat: 12.873758, lng: 80.218891,
+        name: "Ocean Research Park"
+    },
+    "block1": {
+        lat: 12.873886, lng: 80.221469,
+        name: "Block 1"
+    },
+    "remibai": {
+        lat: 12.874384, lng: 80.219016,
+        name: "Remibai Auditorium"
+    },
+    "indoorStadium": {
+        lat: 12.871401, lng: 80.220580,
+        name: "Indoor Stadium"
+    },
+    "boysHostel": {
+        lat: 12.871159, lng: 80.219749,
+        name: "Boys Hostel"
+    },
+    "girlsHostel": {
+        lat: 12.874591, lng: 80.217833,
+        name: "Girls Hostel"
+    }
 };
 
+const roadNames = {
+    "1-7": "Sathyabama College Rd",
+    "1-8": "Sathyabama College Rd",
+    "1-12": "Sathyabama Centre for Advanced Studies Rd",
+    "1-14": "Sathyabama Centre for Advanced Studies Rd",
+    "14-13": "SCAS Canteen Rd",
+    "13-15": "SCAS Canteen Rd",
+    "15-25": "Dental College Rd",
+    "25-3": "Dental College Rd",
+    "3-4": "Sathyabama Research Park Rd",
+    "4-5": "Sathyabama Research Park Rd",
+    "3-6": "St Pauls Rd",
+    "8-37": "Sathyabama Admin Rd",
+    "37-10": "Sathyabama Admin Rd",
+    "10-11": "Bus Rd",
+    "10-28": "Sathyabama Campus Rd",
+    "6-11": "Indoor Stadium Rd",
+    "11-27": "Sathyabama Campus Rd",
+    "27-28": "Boys Hostel Rd",
+    "28-29": "Main Canteen Rd",
+    "11-26": "Architecture Dept Rd",
+    "29-30": "Mess Rd",
+    "30-31": "Mess Rd",
+    "31-32": "Girls Hostel Rd",
+    "32-33": "Girls Hostel Rd",
+    "5-6": "Library Lane",
+    "16-17": "Startup Street",
+    "20-36": "Block 1 Way",
+    "_default": "Sathyabama Campus Rd"
+};
+
+function addBuildingLabels() {
+    for (const key in buildingLabels) {
+        const label = buildingLabels[key];
+
+        L.marker([label.lat, label.lng], {
+            icon: L.divIcon({
+                className: 'building-label',
+                html: `<div class="building-label-text">${label.name}</div>`,
+                iconSize: [150, 40],
+                iconAnchor: [75, 20],
+                popupAnchor: [0, -20]
+            }),
+            zIndexOffset: 500,
+            interactive: false
+        }).addTo(map);
+    }
+}
+
 const campusConnections = [
-    ["1", "7"], ["1", "12"],
+    ["1", "7"], ["1", "12"], ["1", "8"],
     ["2", "15"], ["2", "14"],
-    ["3", "4"], ["3", "6"], ["3", "15"],
+    ["3", "4"], ["3", "6"], ["3", "25"],
     ["4", "5"],
     ["5", "6"], ["5", "9"],
     ["6", "11"],
-    ["7", "8"],
-    ["8", "9"],
+    ["8", "9"], ["8", "37"],
     ["9", "10"],
-    ["10", "11"],
+    ["10", "11"], ["10", "36"], ["10", "28"],
+    ["11", "26"], ["11", "22"],
     ["12", "14"],
     ["13", "14"], ["13", "15"],
+    ["15", "25"],
+    ["20", "36"], ["20", "38"],
+    ["22", "27"],
+    ["23", "27"],
+    ["24", "33"],
+    ["27", "28"],
+    ["28", "29"],
+    ["29", "30"],
+    ["30", "31"],
+    ["31", "32"],
+    ["32", "33"],
+    ["36", "37"],
 ];
 
 
@@ -97,6 +223,9 @@ function showAlert(title, message, type = 'info', callback = null) {
     };
 }
 
+let socket = io('http://localhost:5000');
+let trackedUserMarker = null;
+
 function initMap() {
     const location = [12.871362698167239, 80.225260518718];
 
@@ -118,25 +247,41 @@ function initMap() {
     changeTheme('satellite');
 
     drawCampusGraph();
+    addBuildingLabels()
 
-const labelLocations = [
-        { coords: [12.873219073653498, 80.21891050189049], label: "Central Library" }
-    ];
+    let trackedUserMarkers = {};
 
-    labelLocations.forEach(loc => {
-        L.marker(loc.coords, {
-            icon: L.divIcon({
-                className: 'text-label',
-                html: `<div class="label-text">${loc.label}</div>`,
-                iconSize: [100, 30],
-                iconAnchor: [50, 15]
-            }),
-            interactive: false
-        }).addTo(map);
+    socket.on('locationUpdate', ({ phoneNumber, name, location }) => {
+        console.log("📡 Received location update on client:", phoneNumber, name, location);
+
+        const { lat, lng } = location;
+
+        if (!trackedUserMarkers[phoneNumber]) {
+            const marker = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    className: 'tracked-user-marker',
+                    html: `<div style="background-color: #${getColor(phoneNumber)}; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>`,
+                    iconSize: [20, 20]
+                }),
+                zIndexOffset: 1002
+            }).addTo(map).bindPopup(`👤 <b>${name}</b><br>📞 ${phoneNumber}`);
+
+            trackedUserMarkers[phoneNumber] = marker;
+        } else {
+            trackedUserMarkers[phoneNumber].setLatLng([lat, lng]);
+        }
+
+        map.panTo([lat, lng]);
     });
+}
 
-    locateUserWithRetry(3);
-    setupEventListeners();
+function getColor(phoneNumber) {
+    const colors = ['FF5733', '4CAF50', '2196F3', 'FFC107', '9C27B0', 'E91E63'];
+    let hash = 0;
+    for (let i = 0; i < phoneNumber.length; i++) {
+        hash = phoneNumber.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
 }
 
 // Nodes and the directions
@@ -191,47 +336,6 @@ function changeTheme(themeKey) {
     }).addTo(map);
 }
 
-// Locate user with retry logic
-function locateUserWithRetry(retries, currentAttempt = 1) {
-    const locateBtn = document.getElementById("locateBtn");
-
-    locateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
-    const options = {
-        enableHighAccuracy: true,
-        timeout: 5000 + (currentAttempt * 2000),
-        maximumAge: 0
-    };
-
-    navigator.geolocation.getCurrentPosition(
-        function (position) {
-            handleNewPosition(position, true);
-            locateBtn.innerHTML = '<i class="fas fa-check-circle"></i>';
-            setTimeout(() => {
-                if (!isTracking) {
-                    locateBtn.innerHTML = '<i class="fas fa-location-arrow"></i>';
-                }
-            }, 2000);
-        },
-        function (error) {
-            console.error('Geolocation error:', error);
-            if (currentAttempt < retries) {
-                const delay = Math.pow(2, currentAttempt) * 500;
-                setTimeout(() => {
-                    locateUserWithRetry(retries, currentAttempt + 1);
-                }, delay);
-            } else {
-                locateBtn.innerHTML = '<i class="fas fa-location-arrow"></i>';
-                showAlert(
-                    "Location Error",
-                    "Unable to get your location. Please ensure location services are enabled.",
-                    'error'
-                );
-            }
-        },
-        options
-    );
-}
 
 // Toggle live tracking
 function toggleLiveTracking() {
@@ -356,29 +460,7 @@ function toggleDirections() {
 }
 
 function setupEventListeners() {
-    document.getElementById("locateBtn").addEventListener("click", toggleLiveTracking);
     document.getElementById("fullscreenBtn").addEventListener("click", toggleFullscreen);
-    document.getElementById("directionsBtn").addEventListener("click", toggleDirections);
-    document.getElementById("closeDirections").addEventListener("click", toggleDirections);
-    document.getElementById("backBtn").addEventListener("click", function () {
-        showAlert(
-            "Navigation",
-            "Navigating back to selection page",
-            'info'
-        );
-    });
-
-    document.getElementById("destination").addEventListener("change", function () {
-        destinationReachedAlertShown = false;
-        if (this.value !== "Select Destination" && currentPosition) {
-            calculateRoute();
-        } else {
-            if (routePolyline) {
-                map.removeLayer(routePolyline);
-                routePolyline = null;
-            }
-        }
-    });
 }
 
 document.addEventListener('DOMContentLoaded', initMap);

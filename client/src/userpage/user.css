@@ -447,42 +447,16 @@ body {
     box-sizing: border-box; /* Include padding in width calculation */
 }
 
-.step {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.step-number {
-    background-color: #4E0911;
-    color: white;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 10px;
-    flex-shrink: 0;
-}
-
-.step-text {
-    flex-grow: 1;
-    font-size: 0.9rem;
-}
-
-.step-distance {
-    font-size: 0.8rem;
-    color: #666;
-    margin-top: 5px;
-}
-
-.total-distance {
-    margin-top: 20px;
-    padding-top: 10px;
-    border-top: 2px solid #4E0911;
+.path-label-text {
+    display: inline-block;
+    transform-origin: center center;
+    white-space: nowrap;
+    text-shadow: 
+        -1px -1px 0 white,
+        1px -1px 0 white,
+        -1px 1px 0 white,
+        1px 1px 0 white;
+    color: #4E0911;
     font-weight: bold;
-    text-align: center;
+    font-size: 12px;
 }

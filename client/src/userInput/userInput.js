@@ -93,13 +93,13 @@ function showAlert(type, message) {
             <p>${message}</p>
         </div>
     `;
-    
+
     document.body.appendChild(alertBox);
-    
+
     setTimeout(() => {
         alertBox.classList.add('show');
     }, 10);
-    
+
     setTimeout(() => {
         alertBox.classList.remove('show');
         setTimeout(() => {
@@ -108,20 +108,20 @@ function showAlert(type, message) {
     }, 3000);
 }
 
-form.addEventListener('submit', async function(e) {
+form.addEventListener('submit', async function (e) {
     e.preventDefault();
-    
+
     // Validate all fields
     const isNameValid = validateName();
     const isPhoneValid = validatePhone();
     const isAadhaarValid = validateAadhaar();
-    
+
     if (!isNameValid || !isPhoneValid || !isAadhaarValid) {
         showAlert('error', 'Please fix all errors before submitting');
         return;
     }
 
-    const userData = { 
+    const userData = {
         name: nameInput.value.trim(),
         phone: phoneInput.value.trim(),
         aadhaar: aadhaarInput.value.trim()
@@ -130,15 +130,18 @@ form.addEventListener('submit', async function(e) {
     try {
         const response = await submitUser(userData);
         console.log('Submission successful:', response);
-        
+
+        localStorage.setItem('userName', userData.name);
+        localStorage.setItem('userPhone', userData.phone);
+
         showAlert('success', 'Data submitted successfully!');
-        
+
         form.reset();
-        
+
         setTimeout(() => {
             window.location.href = "../userpage/user.html";
         }, 1500);
-        
+
     } catch (err) {
         console.error('Submission error:', err);
         showAlert('error', err.message || 'Failed to submit. Please try again.');

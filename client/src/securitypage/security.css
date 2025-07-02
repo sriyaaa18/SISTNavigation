@@ -267,3 +267,24 @@ body {
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
     white-space: nowrap;
 }
+
+.building-label-text {
+    background-color: rgba(78, 9, 17, 0.8);
+    color: white;
+    padding: 5px 15px; /* Increased horizontal padding */
+    border-radius: 9999px; /* Creates pill shape (50% would make perfect circles) */
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+    border: 1px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    text-align: center;
+    display: inline; /* Allows width to adjust to content */
+    min-width: 24px; /* Minimum size for very short text */
+    height: 24px; /* Fixed height */
+    line-height: 24px; /* Vertically center text */
+    box-sizing: border-box; /* Include padding in width calculation */
+}

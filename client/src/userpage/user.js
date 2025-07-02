@@ -242,47 +242,14 @@ function dijkstra(startNodeId, endNodeId) {
         current = previous[current];
     }
 
+    console.log("Start node:", startNodeId);
+    console.log("End node:", endNodeId);
+    console.log("Calculated path:", path);
+
     return {
         path: path,
         distance: distances[endNodeId]
     };
-}
-
-function checkUserDirection(position) {
-    if (!routePolyline || !currentPosition) return;
-
-    const userLat = position.coords.latitude;
-    const userLng = position.coords.longitude;
-    const currentUserPos = [userLat, userLng];
-
-    const routeCoords = routePolyline.getLatLngs();
-
-    let minDistance = Infinity;
-
-    routeCoords.forEach((point) => {
-        const distance = map.distance(currentUserPos, [point.lat, point.lng]);
-        if (distance < minDistance) {
-            minDistance = distance;
-        }
-    });
-
-    if (lastCorrectPosition) {
-        const distanceFromLast = map.distance(lastCorrectPosition, currentUserPos);
-
-        if (minDistance > 15 && distanceFromLast > 10) {
-            wrongDirectionCount++;
-
-            if (wrongDirectionCount >= WRONG_DIRECTION_THRESHOLD) {
-                showWrongDirectionAlert();
-                wrongDirectionCount = 0;
-            }
-        } else if (minDistance <= 15) {
-            lastCorrectPosition = currentUserPos;
-            wrongDirectionCount = 0;
-        }
-    } else if (minDistance <= 15) {
-        lastCorrectPosition = currentUserPos;
-    }
 }
 
 function showWrongDirectionAlert() {
@@ -462,19 +429,16 @@ function initMap() {
     locateUserWithRetry(3);
 
     setupEventListeners();
+    map.on('zoomend', updateRoadNameVisibility);
 }
 
+let roadNameMarkers = [];
+
 function drawCampusGraph() {
-    for (const nodeId in campusNodes) {
-        const node = campusNodes[nodeId];
-        L.marker([node.lat, node.lng], {
-            icon: L.divIcon({
-                className: 'graph-node',
-                html: '<div style="background-color: #4E0911; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>',
-                iconSize: [16, 16]
-            })
-        }).addTo(map).bindPopup(node.name);
-    }
+    // Clear existing road name markers
+    roadNameMarkers.forEach(marker => map.removeLayer(marker));
+    roadNameMarkers = [];
+
     for (const [fromId, toId] of campusConnections) {
         const fromNode = campusNodes[fromId];
         const toNode = campusNodes[toId];
@@ -494,7 +458,8 @@ function drawCampusGraph() {
             dashArray: '5, 5'
         }).addTo(map);
 
-        L.marker([midLat, midLng], {
+        // Create the road name marker but don't add it to map yet
+        const roadNameMarker = L.marker([midLat, midLng], {
             icon: L.divIcon({
                 className: 'path-label',
                 html: `<div class="path-label-text">${customName}</div>`,
@@ -502,8 +467,30 @@ function drawCampusGraph() {
                 iconAnchor: [100, 10]
             }),
             interactive: false
-        }).addTo(map);
+        });
+
+        // Store the marker reference
+        roadNameMarkers.push(roadNameMarker);
     }
+
+    updateRoadNameVisibility();
+}
+
+function updateRoadNameVisibility() {
+    const currentZoom = map.getZoom();
+    const showRoadNames = currentZoom >= 19;
+
+    roadNameMarkers.forEach(marker => {
+        if (showRoadNames) {
+            if (!map.hasLayer(marker)) {
+                marker.addTo(map);
+            }
+        } else {
+            if (map.hasLayer(marker)) {
+                map.removeLayer(marker);
+            }
+        }
+    });
 }
 
 function changeTheme(themeKey) {
@@ -687,6 +674,8 @@ function stopTracking() {
     document.getElementById("accuracyContainer").style.display = "none";
 }
 
+let socket = io('http://localhost:5000');
+
 function handleNewPosition(position, isSingleUpdate = false) {
     const now = Date.now();
 
@@ -698,6 +687,28 @@ function handleNewPosition(position, isSingleUpdate = false) {
     const userLat = position.coords.latitude;
     const userLng = position.coords.longitude;
     currentPosition = [userLat, userLng];
+    const userPhone = localStorage.getItem('userPhone');
+    const userName = localStorage.getItem('userName');
+
+    socket.emit('updateLocation', {
+        phoneNumber: userPhone,
+        name: userName,
+        location: {
+            lat: userLat,
+            lng: userLng,
+            accuracy: position.coords.accuracy,
+            timestamp: Date.now()
+        }
+    });
+
+    console.log('📡 Sending location to server:', {
+        userId: userPhone,
+        name: userName,
+        lat: userLat,
+        lng: userLng,
+        accuracy: position.coords.accuracy
+    });
+
 
     accuracyCircle.setLatLng(currentPosition);
     accuracyCircle.setRadius(position.coords.accuracy);
@@ -822,6 +833,7 @@ function calculateRoute() {
     destinationMarker.setLatLng(destination);
     destinationMarker.setPopupContent(destinationSelect.options[destinationSelect.selectedIndex].text);
 
+    // Find closest nodes
     const startNodeId = findClosestNode({ lat: currentPosition[0], lng: currentPosition[1] });
     const endNodeId = findClosestNode({ lat: destination[0], lng: destination[1] });
 
@@ -830,6 +842,7 @@ function calculateRoute() {
         return;
     }
 
+    // Calculate path using Dijkstra
     const result = dijkstra(startNodeId, endNodeId);
 
     if (result.path.length === 0) {
@@ -839,17 +852,13 @@ function calculateRoute() {
 
     currentRouteDistance = result.distance;
 
-    const distanceDisplay = document.getElementById("distanceDisplay");
-    distanceDisplay.textContent = `Distance to destination: ${Math.round(currentRouteDistance)} meters`;
-    distanceDisplay.style.display = "block";
-
     // Build the path coordinates
     const pathCoords = [];
 
     // 1. Start with current position
     pathCoords.push(currentPosition);
 
-    // 2. Add connection to first node
+    // 2. Connect to the first node in path
     const firstNode = campusNodes[result.path[0]];
     pathCoords.push([firstNode.lat, firstNode.lng]);
 
@@ -859,7 +868,7 @@ function calculateRoute() {
         pathCoords.push([node.lat, node.lng]);
     }
 
-    // 4. Add connection to destination
+    // 4. Connect to the destination
     pathCoords.push(destination);
 
     // Remove existing route if any
@@ -867,7 +876,7 @@ function calculateRoute() {
         map.removeLayer(routePolyline);
     }
 
-    // Draw new route with smooth connection between all points
+    // Draw new route following node connections
     routePolyline = L.polyline(pathCoords, {
         color: '#4E0911',
         weight: 6,
@@ -876,19 +885,36 @@ function calculateRoute() {
         smoothFactor: 1.0
     }).addTo(map);
 
-    // Fit map to show the entire route with padding
+    // Update UI
+    document.getElementById("distanceDisplay").textContent =
+        `Distance to destination: ${Math.round(currentRouteDistance)} meters`;
+    document.getElementById("distanceDisplay").style.display = "block";
+
+    // Generate directions
+    generateDirections(result, pathCoords);
+    updateRoadNameVisibility();
+    // Fit map to show the entire route
     map.fitBounds(routePolyline.getBounds(), {
         padding: [50, 50]
     });
+}
 
-    // Generate turn-by-turn directions
-    generateDirections(result, pathCoords);
+// Helper function to find where to connect to a path
+function findConnectionPoint(point, pathEnd) {
+    // Simple implementation - find perpendicular point on path
+    // For more accuracy, you might want to:
+    // 1. Find the actual campus path segment
+    // 2. Calculate proper connection point
+    // This is a simplified version
 
-    // Update UI
-    document.getElementById("locationTitle").textContent =
-        destinationSelect.options[destinationSelect.selectedIndex].text;
-    document.getElementById("locationSubtitle").textContent =
-        `Route calculated - ${Math.round(result.distance)}m`;
+    const pathAngle = Math.atan2(pathEnd[1] - point[1], pathEnd[0] - point[0]);
+    const distance = map.distance(point, pathEnd);
+    const connectDistance = Math.min(10, distance / 2); // Don't connect too far
+
+    return [
+        point[0] + connectDistance / 111320 * Math.cos(pathAngle),
+        point[1] + connectDistance / 111320 * Math.cos(pathAngle) / Math.cos(point[0] * Math.PI / 180)
+    ];
 }
 
 function generateDirections(result, pathCoords) {
