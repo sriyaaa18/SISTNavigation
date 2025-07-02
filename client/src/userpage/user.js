@@ -62,13 +62,35 @@ const campusNodes = {
 };
 
 const roadNames = {
-    "1-7": "Main Gate Road",
-    "1-12": "Innovation Avenue",
-    "1-8": "Science Street",
+    "1-7": "Sathyabama College Rd",
+    "1-8": "Sathyabama College Rd",
+    "1-12": "Sathyabama Centre for Advanced Studies Rd",
+    "1-14": "Sathyabama Centre for Advanced Studies Rd",
+    "14-13": "SCAS Canteen Rd",
+    "13-15": "SCAS Canteen Rd",
+    "15-25": "Dental College Rd",
+    "25-3": "Dental College Rd",
+    "3-4": "Sathyabama Research Park Rd",
+    "4-5": "Sathyabama Research Park Rd",
+    "3-6": "St Pauls Rd",
+    "8-37": "Sathyabama Admin Rd",
+    "37-10": "Sathyabama Admin Rd",
+    "10-11": "Bus Rd",
+    "10-28": "Sathyabama Campus Rd",
+    "6-11": "Indoor Stadium Rd",
+    "11-27": "Sathyabama Campus Rd",
+    "27-28": "Boys Hostel Rd",
+    "28-29": "Main Canteen Rd",
+    "11-26": "Architecture Dept Rd",
+    "29-30": "Mess Rd",
+    "30-31": "Mess Rd",
+    "31-32": "Girls Hostel Rd",
+    "32-33": "Girls Hostel Rd",
     "3-4": "Research Road",
     "5-6": "Library Lane",
     "16-17": "Startup Street",
-    "20-36": "Block 1 Way"
+    "20-36": "Block 1 Way",
+    "_default": "Sathyabama Campus Rd"
 };
 
 const buildingLabels = {
@@ -112,7 +134,6 @@ const buildingLabels = {
         lat: 12.874591, lng: 80.217833,
         name: "Girls Hostel"
     }
-
 };
 
 const campusConnections = [
@@ -141,7 +162,6 @@ const campusConnections = [
     ["32", "33"],
     ["36", "37"],
 ];
-
 
 function addBuildingLabels() {
     for (const key in buildingLabels) {
@@ -236,10 +256,8 @@ function checkUserDirection(position) {
     const userLng = position.coords.longitude;
     const currentUserPos = [userLat, userLng];
 
-    // Get the route coordinates
     const routeCoords = routePolyline.getLatLngs();
 
-    // Find the closest point on the route to the user
     let minDistance = Infinity;
 
     routeCoords.forEach((point) => {
@@ -249,7 +267,6 @@ function checkUserDirection(position) {
         }
     });
 
-    // Check if user is moving away from the route
     if (lastCorrectPosition) {
         const distanceFromLast = map.distance(lastCorrectPosition, currentUserPos);
 
@@ -331,7 +348,6 @@ function showWrongDirectionAlert() {
     }
 }
 
-// Find the closest node to a given position
 function findClosestNode(position) {
     let closestNodeId = null;
     let minDistance = Infinity;
@@ -352,7 +368,6 @@ function findClosestNode(position) {
     return closestNodeId;
 }
 
-// Custom Alert System
 function showAlert(title, message, type = 'info', callback = null) {
     const overlay = document.getElementById('alertOverlay');
     const box = document.getElementById('alertBox');
@@ -362,15 +377,12 @@ function showAlert(title, message, type = 'info', callback = null) {
     const alertButton = document.getElementById('alertButton');
     const alertClose = document.getElementById('alertClose');
 
-    // Set content
     alertTitle.textContent = title;
     alertMessage.textContent = message;
 
-    // Set type (changes colors and icon)
     box.className = 'alert-box';
     box.classList.add(`alert-${type}`);
 
-    // Set icon based on type
     let iconClass;
     switch (type) {
         case 'success':
@@ -387,10 +399,8 @@ function showAlert(title, message, type = 'info', callback = null) {
     }
     alertIcon.innerHTML = `<i class="fas ${iconClass}"></i>`;
 
-    // Show the alert
     overlay.classList.add('active');
 
-    // Close handlers
     function closeAlert() {
         overlay.classList.remove('active');
         if (callback) callback();
@@ -399,7 +409,6 @@ function showAlert(title, message, type = 'info', callback = null) {
     alertButton.onclick = closeAlert;
     alertClose.onclick = closeAlert;
 
-    // Also close when clicking outside the box
     overlay.onclick = function (e) {
         if (e.target === overlay) {
             closeAlert();
@@ -477,7 +486,7 @@ function drawCampusGraph() {
         const midLng = (fromNode.lng + toNode.lng) / 2;
 
         const key = [fromId, toId].sort().join("-");
-        const customName = roadNames[key] || `${fromNode.name} ↔ ${toNode.name}`;
+        const customName = roadNames[key] || roadNames["_default"];
 
         L.polyline([fromLatLng, toLatLng], {
             color: '#905F66',
@@ -496,10 +505,8 @@ function drawCampusGraph() {
             interactive: false
         }).addTo(map);
     }
-
 }
 
-// Change map theme
 function changeTheme(themeKey) {
     const theme = {
         name: 'Satellite',
@@ -518,7 +525,6 @@ function changeTheme(themeKey) {
     }).addTo(map);
 }
 
-// Locate user with retry logic
 function locateUserWithRetry(retries, currentAttempt = 1) {
     const locateBtn = document.getElementById("locateBtn");
 
@@ -560,7 +566,6 @@ function locateUserWithRetry(retries, currentAttempt = 1) {
     );
 }
 
-// Toggle live tracking
 function toggleLiveTracking() {
     const locateBtn = document.getElementById("locateBtn");
 
@@ -573,7 +578,6 @@ function toggleLiveTracking() {
     }
 }
 
-// Start precision tracking
 function startPrecisionTracking() {
     isTracking = true;
     bestAccuracy = Number.MAX_VALUE;
@@ -596,7 +600,6 @@ function startPrecisionTracking() {
     );
 }
 
-// Handle tracking position
 function handleTrackingPosition(position) {
     const now = Date.now();
 
@@ -685,7 +688,6 @@ function stopTracking() {
     document.getElementById("accuracyContainer").style.display = "none";
 }
 
-// Handle new position
 function handleNewPosition(position, isSingleUpdate = false) {
     const now = Date.now();
 
