@@ -822,9 +822,11 @@ function calculateRoute() {
     destinationMarker.setLatLng(destination);
     destinationMarker.setPopupContent(destinationSelect.options[destinationSelect.selectedIndex].text);
 
+    // Find the closest nodes to current position and destination
     const startNodeId = findClosestNode({ lat: currentPosition[0], lng: currentPosition[1] });
     const endNodeId = findClosestNode({ lat: destination[0], lng: destination[1] });
 
+    // Calculate path using Dijkstra's algorithm
     const result = dijkstra(startNodeId, endNodeId);
 
     if (result.path.length === 0) {
@@ -838,21 +840,30 @@ function calculateRoute() {
     distanceDisplay.textContent = `Distance to destination: ${Math.round(currentRouteDistance)} meters`;
     distanceDisplay.style.display = "block";
 
+    // Build the path coordinates including:
+    // 1. Current position
+    // 2. Path through campus nodes
+    // 3. Destination position
     const pathCoords = [];
 
+    // Add current position
     pathCoords.push(currentPosition);
 
+    // Add the path through campus nodes
     for (const nodeId of result.path) {
         const node = campusNodes[nodeId];
         pathCoords.push([node.lat, node.lng]);
     }
 
+    // Add destination position
     pathCoords.push(destination);
 
+    // Remove existing route if any
     if (routePolyline) {
         map.removeLayer(routePolyline);
     }
 
+    // Draw new route
     routePolyline = L.polyline(pathCoords, {
         color: '#4E0911',
         weight: 6,
@@ -860,10 +871,13 @@ function calculateRoute() {
         lineJoin: 'round'
     }).addTo(map);
 
+    // Fit map to show the entire route
     map.fitBounds(routePolyline.getBounds());
 
+    // Generate turn-by-turn directions
     generateDirections(result, pathCoords);
 
+    // Update UI
     document.getElementById("locationTitle").textContent =
         destinationSelect.options[destinationSelect.selectedIndex].text;
     document.getElementById("locationSubtitle").textContent =
@@ -876,89 +890,91 @@ function generateDirections(result, pathCoords) {
 
     if (result.path.length === 0) return;
 
+    // Create start step
     const startStep = document.createElement("div");
     startStep.className = "step";
-
+    
     const startNumber = document.createElement("div");
     startNumber.className = "step-number";
     startNumber.textContent = "1";
-
+    
     const startText = document.createElement("div");
     startText.className = "step-text";
     startText.textContent = "Start from your current location";
-
+    
     startStep.appendChild(startNumber);
     startStep.appendChild(startText);
     stepsContainer.appendChild(startStep);
 
-    for (let i = 0; i < result.path.length; i++) {
-        const nodeId = result.path[i];
-        const node = campusNodes[nodeId];
+    let stepNumber = 2;
+    
+    // Generate steps for each segment of the path
+    for (let i = 0; i < result.path.length - 1; i++) {
+        const fromNodeId = result.path[i];
+        const toNodeId = result.path[i + 1];
+        
+        // Get the road name for this segment
+        const key = [fromNodeId, toNodeId].sort().join("-");
+        const roadName = roadNames[key] || roadNames["_default"];
+        
+        const fromNode = campusNodes[fromNodeId];
+        const toNode = campusNodes[toNodeId];
+        
+        const distance = Math.round(map.distance(
+            [fromNode.lat, fromNode.lng],
+            [toNode.lat, toNode.lng]
+        ));
 
+        // Create step for this road segment
         const step = document.createElement("div");
         step.className = "step";
-
-        const stepNumber = document.createElement("div");
-        stepNumber.className = "step-number";
-        stepNumber.textContent = i + 2;
-
+        
+        const stepNum = document.createElement("div");
+        stepNum.className = "step-number";
+        stepNum.textContent = stepNumber++;
+        
         const stepText = document.createElement("div");
         stepText.className = "step-text";
-
-        let distance = 0;
-        if (i > 0) {
-            const prevNodeId = result.path[i - 1];
-            const prevNode = campusNodes[prevNodeId];
-            distance = Math.round(map.distance(
-                [prevNode.lat, prevNode.lng],
-                [node.lat, node.lng]
-            ));
-        } else {
-            distance = Math.round(map.distance(
-                currentPosition,
-                [node.lat, node.lng]
-            ));
-        }
-
-        stepText.textContent = `Proceed to ${node.name}`;
-
+        stepText.textContent = `Take ${roadName}`;
+        
         const stepInfo = document.createElement("div");
         stepInfo.style.fontSize = "0.8rem";
         stepInfo.style.color = "#666";
         stepInfo.style.marginTop = "5px";
         stepInfo.textContent = `${distance}m`;
-
+        
         stepText.appendChild(stepInfo);
-        step.appendChild(stepNumber);
+        step.appendChild(stepNum);
         step.appendChild(stepText);
         stepsContainer.appendChild(step);
     }
 
+    // Create destination step
     const destStep = document.createElement("div");
     destStep.className = "step";
-
+    
     const destNumber = document.createElement("div");
     destNumber.className = "step-number";
-    destNumber.textContent = result.path.length + 2;
-
+    destNumber.textContent = stepNumber;
+    
     const destText = document.createElement("div");
     destText.className = "step-text";
-
+    
     const lastNodeId = result.path[result.path.length - 1];
     const lastNode = campusNodes[lastNodeId];
     const finalDistance = Math.round(map.distance(
         [lastNode.lat, lastNode.lng],
         pathCoords[pathCoords.length - 1]
     ));
-
+    
     destText.textContent = "You have reached your destination";
-
+    
     const destInfo = document.createElement("div");
     destInfo.style.fontSize = "0.8rem";
     destInfo.style.color = "#666";
     destInfo.style.marginTop = "5px";
     destInfo.textContent = `${finalDistance}m`;
-
+    
     destText.appendChild(destInfo);
     destStep.appendChild(destNumber);
     destStep.appendChild(destText);

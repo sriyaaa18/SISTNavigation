@@ -447,3 +447,41 @@ body {
     box-sizing: border-box; /* Include padding in width calculation */
 }
 
+#stepsContainer {
+    padding: 10px;
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    background-color: #4E0911;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.step-text {
+    flex-grow: 1;
+    font-size: 0.9rem;
+}
+
+.step-distance {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 5px;
+}
