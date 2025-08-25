@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Security Tracking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <link rel="stylesheet" href="security.css">
+</head>
+
+<body>
+    <div class="header">
+        <h1>Security Tracking</h1>
+        <div style="width: 40px;"></div>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="controls">
+        <button class="control-btn" id="fullscreenBtn">
+            <i class="fas fa-expand"></i>
+        </button>
+    </div>
+
+    <div class="test-box">
+
+    </div>
+
+    <!-- Custom Alert Box -->
+    <div class="alert-overlay" id="alertOverlay">
+        <div class="alert-box" id="alertBox">
+            <div class="alert-header">
+                <div class="alert-title" id="alertTitle">Alert</div>
+                <button class="alert-close" id="alertClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="alert-content">
+                <div class="alert-icon" id="alertIcon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div id="alertMessage">This is an alert message.</div>
+            </div>
+            <div class="alert-footer">
+                <button class="alert-button" id="alertButton">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.min.js"></script>
+
+    <script src="security.js"></script>
+</body>
+
+</html>

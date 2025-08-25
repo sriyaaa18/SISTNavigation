@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mobile Campus Navigator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <link rel="stylesheet" href="user.css">
+</head>
+
+<body>
+    <div class="header">
+        <button class="back-btn" id="backBtn">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>Campus Navigation</h1>
+        <div style="width: 40px;"></div>
+    </div>
+
+    <div class="map-container">
+        <div class="route-form">
+            <select id="destination" class="responsive-select"
+                style="font-size: 18px; padding: 10px; max-width: 100%; box-sizing: border-box;">
+                <option value="Select Destination">--Select Destination--</option>
+                <option value="12.873959,80.219224">Startup cell</option>
+                <option value="12.873543,80.219277">Central Library</option>
+                <option value="12.871645,80.225501">Sathyabama Centre for Advanced Studies</option>
+                <option value="12.872815,80.221325">International Research Centre</option>
+                <option value="12.873758,80.218891">Ocean Research Park</option>
+                <option value="12.873886,80.221469">Block 1</option>
+                <option value="12.874384,80.219016">Remibai Auditorium</option>
+                <option value="12.871401,80.220580">Indoor Stadium</option>
+                <option value="12.871159,80.219749">Boys Hostel</option>
+                <option value="12.874591,80.217833">Girls Hostel</option>
+            </select>
+            <div id="distanceDisplay" class="distance-display" style="display: none;"></div>
+        </div>
+
+        <div id="map"></div>
+
+        <div class="controls">
+            <button class="control-btn" id="locateBtn">
+                <i class="fas fa-location-arrow"></i>
+            </button>
+            <button class="control-btn" id="fullscreenBtn">
+                <i class="fas fa-expand"></i>
+            </button>
+            <button class="control-btn" id="directionsBtn">
+                <i class="fas fa-directions"></i>
+            </button>
+        </div>
+
+        <div class="directions-panel" id="directionsPanel">
+            <button class="close-directions" id="closeDirections">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2>Directions</h2>
+            <div id="stepsContainer"></div>
+        </div>
+    </div>
+
+    <div class="location-info">
+        <h2 id="locationTitle">Campus Navigation</h2>
+        <p id="locationSubtitle">Get directions to any location on campus</p>
+
+        <div id="accuracyContainer" style="display: none;">
+            <div class="accuracy-display">
+                <i class="fas fa-bullseye"></i>
+                <span id="accuracyText">Accuracy: Calculating...</span>
+            </div>
+            <div class="accuracy-meter">
+                <div class="accuracy-bar" id="accuracyBar"></div>
+            </div>
+        </div>
+
+        <div class="location-details">
+            <div class="detail-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="detail-text">SIST Campus</div>
+
+            <div class="detail-icon">
+                <i class="fas fa-road"></i>
+            </div>
+            <div class="detail-text">High-accuracy navigation</div>
+
+            <div class="detail-icon">
+                <i class="fas fa-compass"></i>
+            </div>
+            <div class="detail-text">Real-time tracking</div>
+        </div>
+    </div>
+
+    <!-- Custom Alert Box -->
+    <div class="alert-overlay" id="alertOverlay">
+        <div class="alert-box" id="alertBox">
+            <div class="alert-header">
+                <div class="alert-title" id="alertTitle">Alert</div>
+                <button class="alert-close" id="alertClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="alert-content">
+                <div class="alert-icon" id="alertIcon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div id="alertMessage">This is an alert message.</div>
+            </div>
+            <div class="alert-footer">
+                <button class="alert-button" id="alertButton">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.min.js"></script>
+
+    <script src="user.js"></script>
+</body>
+
+</html>

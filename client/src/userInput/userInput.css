@@ -1,0 +1,196 @@
+:root {
+    --primary: #4E0911;
+    --secondary: #905F66;
+    --dark: #260707;
+    --light: #E4CEC2;
+    --bg: #FAF1EC;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-top: 4px solid var(--primary);
+}
+
+h2 {
+    text-align: center;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+label {
+    display: block;
+    margin: 1rem 0 0.5rem;
+    font-weight: 500;
+    color: var(--dark);
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="number"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--light);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    background-color: var(--bg);
+}
+
+/* Remove number input spinners for all browsers */
+input[type="number"] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="number"]:focus {
+    outline: none;
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 2px rgba(144, 95, 102, 0.2);
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: var(--dark);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Error styling for invalid inputs */
+input:invalid {
+    border-color: #F44336;
+}
+
+input:invalid:focus {
+    box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .form-container {
+        padding: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Error styles (add to existing CSS) */
+.error {
+    color: var(--primary);
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+}
+
+input.invalid {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(78, 9, 17, 0.2);
+}
+
+/* Custom alert system */
+.custom-alert {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 25px;
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translate(-50%, -20px);
+    max-width: 90%;
+    width: max-content;
+}
+
+.custom-alert.show {
+    opacity: 99999;
+    transform: translate(-50%, 0);
+}
+
+.custom-alert.success {
+    background-color: #4CAF50;
+    box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+}
+
+.custom-alert.error {
+    background-color: var(--primary);
+    box-shadow: 0 3px 10px rgba(78, 9, 17, 0.3);
+}
+
+.alert-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-icon {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .custom-alert {
+        width: 90%;
+        padding: 12px 20px;
+    }
+    
+    .error {
+        font-size: 0.7rem;
+    }
+}
