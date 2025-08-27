@@ -19,6 +19,7 @@ let lastCorrectNode = null;
 let wrongDirectionCount = 0;
 const WRONG_DIRECTION_THRESHOLD = 3;
 let lastCorrectPosition = null;
+let routeArrows = []; 
 
 const campusNodes = {
     "1": { lat: 12.872958, lng: 80.225815, name: "Node 1" },
@@ -501,6 +502,25 @@ function showAlert(title, message, type = 'info', callback = null) {
     };
 }
 
+
+function updateArrowVisibility() {
+    const zoom = map.getZoom();
+    const showArrows = zoom >= 17; // Show arrows only at higher zoom levels
+    
+    routeArrows.forEach(arrow => {
+        if (showArrows) {
+            if (!map.hasLayer(arrow)) {
+                map.addLayer(arrow);
+            }
+        } else {
+            if (map.hasLayer(arrow)) {
+                map.removeLayer(arrow);
+            }
+        }
+    });
+}
+
+// Update the initMap function to include arrow visibility handling
 function initMap() {
     const location = [12.871362698167239, 80.225260518718];
 
@@ -545,10 +565,14 @@ function initMap() {
         zIndex: 999
     }).addTo(map);
 
-    locateUserWithRetry(3);
+    // Add event listeners AFTER the map is created
+    map.on('zoomend', function() {
+        updateRoadNameVisibility();
+        updateArrowVisibility();
+    });
 
+    locateUserWithRetry(3);
     setupEventListeners();
-    map.on('zoomend', updateRoadNameVisibility);
 }
 
 let roadNameMarkers = [];
@@ -927,6 +951,13 @@ function calculateRoute() {
     wrongDirectionCount = 0;
     lastCorrectPosition = currentPosition;
 
+    // Clear existing arrows and route
+    clearRouteArrows();
+    if (routePolyline) {
+        map.removeLayer(routePolyline);
+        routePolyline = null;
+    }
+
     if (!currentPosition) {
         showAlert(
             "Tracking Required",
@@ -937,10 +968,6 @@ function calculateRoute() {
     }
 
     if (end === "Select Destination") {
-        if (routePolyline) {
-            map.removeLayer(routePolyline);
-            routePolyline = null;
-        }
         document.getElementById("distanceDisplay").style.display = "none";
         document.getElementById("stepsContainer").innerHTML = "";
         return;
@@ -990,11 +1017,6 @@ function calculateRoute() {
     // 4. Connect to the destination
     pathCoords.push(destination);
 
-    // Remove existing route if any
-    if (routePolyline) {
-        map.removeLayer(routePolyline);
-    }
-
     // Draw new route following node connections
     routePolyline = L.polyline(pathCoords, {
         color: '#4E0911',
@@ -1004,6 +1026,9 @@ function calculateRoute() {
         smoothFactor: 1.0
     }).addTo(map);
 
+    // Add arrows along the route
+    addRouteArrows(pathCoords);
+
     // Update UI
     document.getElementById("distanceDisplay").textContent =
         `Distance to destination: ${Math.round(currentRouteDistance)} meters`;
@@ -1012,10 +1037,113 @@ function calculateRoute() {
     // Generate directions
     generateDirections(result, pathCoords);
     updateRoadNameVisibility();
-    // Fit map to show the entire route
-    map.fitBounds(routePolyline.getBounds(), {
+    
+    // Fit map to show the entire route with some padding
+    const bounds = routePolyline.getBounds();
+    map.fitBounds(bounds, {
         padding: [50, 50]
     });
+}
+
+function addRouteArrows(pathCoords) {
+    // Clear any existing arrows
+    clearRouteArrows();
+    
+    const arrowSpacing = 30; // Reduced spacing for more frequent arrows
+    let accumulatedDistance = 0;
+    
+    for (let i = 0; i < pathCoords.length - 1; i++) {
+        const start = pathCoords[i];
+        const end = pathCoords[i + 1];
+        const segmentDistance = map.distance(start, end);
+        const segmentBearing = calculateBearing(start[0], start[1], end[0], end[1]);
+        
+        // Calculate how many arrows to place on this segment
+        const numArrows = Math.max(1, Math.floor(segmentDistance / arrowSpacing));
+        
+        for (let j = 1; j <= numArrows; j++) {
+            const ratio = j / (numArrows + 1);
+            const arrowLat = start[0] + (end[0] - start[0]) * ratio;
+            const arrowLng = start[1] + (end[1] - start[1]) * ratio;
+            
+            // Get the appropriate arrow icon based on bearing
+            const arrowIcon = getDirectionArrow(segmentBearing);
+            
+            // Create arrow marker with proper rotation
+            const arrowMarker = L.marker([arrowLat, arrowLng], {
+                icon: L.divIcon({
+                    className: 'route-arrow',
+                    html: `<div style="transform: rotate(${segmentBearing}deg);">
+                             <i class="fas ${arrowIcon}"></i>
+                           </div>`,
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                }),
+                interactive: false,
+                zIndexOffset: 1000
+            }).addTo(map);
+            
+            routeArrows.push(arrowMarker);
+        }
+        
+        accumulatedDistance += segmentDistance;
+    }
+    
+    // Add a special arrow near the destination
+    if (pathCoords.length > 1) {
+        const lastSegmentStart = pathCoords[pathCoords.length - 2];
+        const destination = pathCoords[pathCoords.length - 1];
+        const destBearing = calculateBearing(lastSegmentStart[0], lastSegmentStart[1], destination[0], destination[1]);
+        
+        // Get the appropriate arrow icon for destination
+        const destArrowIcon = getDirectionArrow(destBearing);
+        
+        // Position arrow closer to destination
+        const ratio = 0.8; // 80% towards destination from last point
+        const arrowLat = lastSegmentStart[0] + (destination[0] - lastSegmentStart[0]) * ratio;
+        const arrowLng = lastSegmentStart[1] + (destination[1] - lastSegmentStart[1]) * ratio;
+        
+        const finalArrow = L.marker([arrowLat, arrowLng], {
+            icon: L.divIcon({
+                className: 'route-arrow final-arrow',
+                html: `<div style="transform: rotate(${destBearing}deg);">
+                         <i class="fas ${destArrowIcon}" style="color: #4E0911; font-size: 24px;"></i>
+                       </div>`,
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            }),
+            interactive: false,
+            zIndexOffset: 1001
+        }).addTo(map);
+        
+        routeArrows.push(finalArrow);
+    }
+}
+
+function clearRouteArrows() {
+    routeArrows.forEach(arrow => {
+        if (map.hasLayer(arrow)) {
+            map.removeLayer(arrow);
+        }
+    });
+    routeArrows = [];
+}
+
+// Helper function to calculate bearing between two points
+function calculateBearing(lat1, lng1, lat2, lng2) {
+    const toRad = deg => deg * Math.PI / 180;
+    const toDeg = rad => rad * 180 / Math.PI;
+    
+    const φ1 = toRad(lat1);
+    const φ2 = toRad(lat2);
+    const Δλ = toRad(lng2 - lng1);
+    
+    const y = Math.sin(Δλ) * Math.cos(φ2);
+    const x = Math.cos(φ1) * Math.sin(φ2) -
+            Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+    const θ = Math.atan2(y, x);
+    
+    return (toDeg(θ) + 360) % 360;
 }
 
 // Helper function to find where to connect to a path
@@ -1056,6 +1184,11 @@ function generateDirections(result, pathCoords) {
     const startText = document.createElement("div");
     startText.className = "step-text";
 
+    // Add arrow icon for start
+    const startArrow = document.createElement("div");
+    startArrow.className = "step-arrow";
+    startArrow.innerHTML = '<i class="fas fa-play"></i>'; // Start arrow
+
     const firstNode = campusNodes[result.path[0]];
     const distanceToFirstNode = map.distance(currentPosition, [firstNode.lat, firstNode.lng]);
     totalDistance += distanceToFirstNode;
@@ -1068,6 +1201,7 @@ function generateDirections(result, pathCoords) {
     startText.appendChild(startInfo);
 
     startStep.appendChild(startNumber);
+    startStep.appendChild(startArrow); // Add arrow
     startStep.appendChild(startText);
     stepsContainer.appendChild(startStep);
 
@@ -1078,6 +1212,15 @@ function generateDirections(result, pathCoords) {
 
         const fromNode = campusNodes[fromNodeId];
         const toNode = campusNodes[toNodeId];
+
+        // Calculate bearing/direction between nodes
+        const bearing = calculateBearing(
+            fromNode.lat, fromNode.lng,
+            toNode.lat, toNode.lng
+        );
+        
+        // Get the appropriate arrow based on bearing
+        const arrowIcon = getDirectionArrow(bearing);
 
         // Get the road name for this segment
         const key = [fromNodeId, toNodeId].sort().join("-");
@@ -1097,6 +1240,11 @@ function generateDirections(result, pathCoords) {
         stepNum.className = "step-number";
         stepNum.textContent = stepNumber++;
 
+        // Add direction arrow
+        const stepArrow = document.createElement("div");
+        stepArrow.className = "step-arrow";
+        stepArrow.innerHTML = `<i class="fas ${arrowIcon}"></i>`;
+
         const stepText = document.createElement("div");
         stepText.className = "step-text";
         stepText.textContent = `Follow ${roadName}`;
@@ -1107,6 +1255,7 @@ function generateDirections(result, pathCoords) {
 
         stepText.appendChild(stepInfo);
         step.appendChild(stepNum);
+        step.appendChild(stepArrow); // Add arrow
         step.appendChild(stepText);
         stepsContainer.appendChild(step);
     }
@@ -1118,6 +1267,11 @@ function generateDirections(result, pathCoords) {
     const destNumber = document.createElement("div");
     destNumber.className = "step-number";
     destNumber.textContent = stepNumber;
+
+    // Add destination icon
+    const destArrow = document.createElement("div");
+    destArrow.className = "step-arrow";
+    destArrow.innerHTML = '<i class="fas fa-flag-checkered"></i>';
 
     const destText = document.createElement("div");
     destText.className = "step-text";
@@ -1138,6 +1292,7 @@ function generateDirections(result, pathCoords) {
     destText.appendChild(destInfo);
 
     destStep.appendChild(destNumber);
+    destStep.appendChild(destArrow);
     destStep.appendChild(destText);
     stepsContainer.appendChild(destStep);
 
@@ -1146,6 +1301,38 @@ function generateDirections(result, pathCoords) {
     totalDistanceElement.className = "total-distance";
     totalDistanceElement.textContent = `Total distance: ${Math.round(totalDistance)} meters`;
     stepsContainer.appendChild(totalDistanceElement);
+}
+
+// Helper function to calculate bearing between two points
+function calculateBearing(lat1, lng1, lat2, lng2) {
+    const toRad = deg => deg * Math.PI / 180;
+    const toDeg = rad => rad * 180 / Math.PI;
+    
+    const φ1 = toRad(lat1);
+    const φ2 = toRad(lat2);
+    const Δλ = toRad(lng2 - lng1);
+    
+    const y = Math.sin(Δλ) * Math.cos(φ2);
+    const x = Math.cos(φ1) * Math.sin(φ2) -
+            Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+    const θ = Math.atan2(y, x);
+    
+    return (toDeg(θ) + 360) % 360;
+}
+
+// Helper function to get appropriate arrow based on bearing
+function getDirectionArrow(bearing) {
+    // Map bearing to arrow icons
+    if (bearing >= 337.5 || bearing < 22.5) return 'fa-arrow-up';         // North
+    if (bearing >= 22.5 && bearing < 67.5) return 'fa-arrow-up-right';    // Northeast
+    if (bearing >= 67.5 && bearing < 112.5) return 'fa-arrow-right';      // East
+    if (bearing >= 112.5 && bearing < 157.5) return 'fa-arrow-down-right'; // Southeast
+    if (bearing >= 157.5 && bearing < 202.5) return 'fa-arrow-down';      // South
+    if (bearing >= 202.5 && bearing < 247.5) return 'fa-arrow-down-left'; // Southwest
+    if (bearing >= 247.5 && bearing < 292.5) return 'fa-arrow-left';      // West
+    if (bearing >= 292.5 && bearing < 337.5) return 'fa-arrow-up-left';   // Northwest
+    
+    return 'fa-arrow-right'; // Default
 }
 
 function toggleFullscreen() {
