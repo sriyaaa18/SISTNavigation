@@ -19,7 +19,6 @@ let lastCorrectNode = null;
 let wrongDirectionCount = 0;
 const WRONG_DIRECTION_THRESHOLD = 3;
 let lastCorrectPosition = null;
-let routeArrows = []; 
 
 const campusNodes = {
     "1": { lat: 12.872958, lng: 80.225815, name: "Node 1" },
@@ -60,29 +59,29 @@ const campusNodes = {
     "36": { lat: 12.8733712, lng: 80.2216667, name: "Node 36" },
     "37": { lat: 12.8734738, lng: 80.2217670, name: "Node 37" },
     "38": { lat: 12.8749894, lng: 80.2216946, name: "Node 38" },
-    "39": { lat: 12.8730558, lng:80.2218957, name: "Admin Block" },
-    "40": { lat:12.870717,lng:80.222929,name:"Sathyabama General Hospital" },
-    "41": {lat:12.871948,lng:80.220641,name:"Main ground"},
-    "42": {lat:12.872518,lng:80.217632,name:"law college ground"},
-    "43": {lat: 12.871312, lng: 80.219083,name: "Boys hostel"},
-    "44": {lat:12.8739121, lng:80.2209593,name:"ECE Tower lab"},
-    "45": {lat:12.872402, lng:80.219474,name:"Main canteen"},
-    "46": {lat:12.872921, lng:80.226545,name:"Main Arch"},
-    "47": {lat:12.870906, lng:80.224960,name:"Scas canteen"},
-    "48":{lat:12.870791, lng:80.223355,name:"Dental block"},
-    "49":{lat:12.870860, lng:80.222968,name:"General hospital"},
-    "50":{lat:12.8709960, lng:80.2221800,name:"St.pauls"},
-    "51":{lat:12.871408 ,lng:80.222344,name:"Ocean research park"},
-    "52":{lat:12.871151,lng:80.220771,name:"Open area theatre"},
-    "53":{lat:12.870527,lng:80.220409,name:"Architecture block"},
-    "54":{lat:12.872794,lng:80.221247,name:"IRC"},
-    "55":{lat:12.873247,lng:80.221306,name:"Jeppiaar Memorial"},
-    "56":{lat:12.875086,lng:80.221949,name:"Girls Main mess"},
-    "57":{lat:12.871892,lng:80.220650,name:"Main ground"},
-    "60":{lat:12.872678,lng:80.218808,name:"Boys Main mess"},
-    "61":{lat:12.872977,lng:80.217516,name:"New CSE Block"},
-    "62":{lat:12.873973,lng:80.218756,name:"Church"},
-    "63":{lat:12.870557,lng:80.226297,name:"Dental Gate"}
+    "39": { lat: 12.8730558, lng: 80.2218957, name: "Admin Block" },
+    "40": { lat: 12.870717, lng: 80.222929, name: "Sathyabama General Hospital" },
+    "41": { lat: 12.871948, lng: 80.220641, name: "Main ground" },
+    "42": { lat: 12.872518, lng: 80.217632, name: "law college ground" },
+    "43": { lat: 12.871312, lng: 80.219083, name: "Boys hostel" },
+    "44": { lat: 12.8739121, lng: 80.2209593, name: "ECE Tower lab" },
+    "45": { lat: 12.872402, lng: 80.219474, name: "Main canteen" },
+    "46": { lat: 12.872921, lng: 80.226545, name: "Main Arch" },
+    "47": { lat: 12.870906, lng: 80.224960, name: "Scas canteen" },
+    "48": { lat: 12.870791, lng: 80.223355, name: "Dental block" },
+    "49": { lat: 12.870860, lng: 80.222968, name: "General hospital" },
+    "50": { lat: 12.8709960, lng: 80.2221800, name: "St.pauls" },
+    "51": { lat: 12.871408, lng: 80.222344, name: "Ocean research park" },
+    "52": { lat: 12.871151, lng: 80.220771, name: "Open area theatre" },
+    "53": { lat: 12.870527, lng: 80.220409, name: "Architecture block" },
+    "54": { lat: 12.872794, lng: 80.221247, name: "IRC" },
+    "55": { lat: 12.873247, lng: 80.221306, name: "Jeppiaar Memorial" },
+    "56": { lat: 12.875086, lng: 80.221949, name: "Girls Main mess" },
+    "57": { lat: 12.871892, lng: 80.220650, name: "Main ground" },
+    "60": { lat: 12.872678, lng: 80.218808, name: "Boys Main mess" },
+    "61": { lat: 12.872977, lng: 80.217516, name: "New CSE Block" },
+    "62": { lat: 12.873973, lng: 80.218756, name: "Church" },
+    "63": { lat: 12.870557, lng: 80.226297, name: "Dental Gate" }
 };
 
 const roadNames = {
@@ -157,102 +156,91 @@ const buildingLabels = {
         lat: 12.874591, lng: 80.217833,
         name: "Girls Hostel"
     },
-    "Admin Block":{
-        lat: 12.8730558, lng:80.2218957,
-        name:"Administration Block"
+    "Admin Block": {
+        lat: 12.8730558, lng: 80.2218957,
+        name: "Administration Block"
     },
-    "Hospital":{
-        lat:12.870717,lng:80.222929,
-        name:"Sathyabama General Hospital"
+    "Hospital": {
+        lat: 12.870717, lng: 80.222929,
+        name: "Sathyabama General Hospital"
     },
-    "Main ground":{
-        lat:12.871948,lng:80.220641,
-        name:"Main ground"
+    "Main ground": {
+        lat: 12.871948, lng: 80.220641,
+        name: "Main ground"
     },
-    "Law ground":{
-        lat:12.872518,lng:80.217632,
-        name:"law college ground"
+    "Law ground": {
+        lat: 12.872518, lng: 80.217632,
+        name: "law college ground"
     },
-    
-    "Ece tower lab":{
-        lat:12.8739121, lng:80.2209593,
-        name:"ECE Tower lab"
+
+    "Ece tower lab": {
+        lat: 12.8739121, lng: 80.2209593,
+        name: "ECE Tower lab"
     },
-    "Main canteen":{
-        lat:12.872402, lng:80.219474,
-        name:"Main canteen"
+    "Main canteen": {
+        lat: 12.872402, lng: 80.219474,
+        name: "Main canteen"
     },
-    "Main Arch":{
-        lat:12.872921, lng:80.226545,
-        name:"Main Arch"
+    "Main Arch": {
+        lat: 12.872921, lng: 80.226545,
+        name: "Main Arch"
     },
-    "Scas canteen":{
-        lat:12.870906, lng:80.224960,
-        name:"Scas canteen"
+    "Scas canteen": {
+        lat: 12.870906, lng: 80.224960,
+        name: "Scas canteen"
     },
-    "dental block":{
-        lat:12.870791, lng:80.223355,
-        name:"Dental block"
+    "dental block": {
+        lat: 12.870791, lng: 80.223355,
+        name: "Dental block"
     },
-    "General hospital":{
-        lat:12.870860, lng:80.222968,
-        name:"General hospital"
+    "General hospital": {
+        lat: 12.870860, lng: 80.222968,
+        name: "General hospital"
     },
-    "St.pauls":{
-        lat:12.8709960, lng:80.2221800,
-        name:"St.pauls"
+    "St.pauls": {
+        lat: 12.8709960, lng: 80.2221800,
+        name: "St.pauls"
     },
-    "Ocean research park":{
-        lat:12.871408 ,lng:80.222344,
-        name:"Ocean research park"
+    "Ocean research park": {
+        lat: 12.871408, lng: 80.222344,
+        name: "Ocean research park"
     },
-    "Open area theatre":{
-        lat:12.871151,lng:80.220771,
-        name:"Open area theatre"
+    "Open area theatre": {
+        lat: 12.871151, lng: 80.220771,
+        name: "Open area theatre"
     },
-    "Architecture block":{
-        lat:12.870527,lng:80.220409,
-        name:"Architecture block"
+    "Architecture block": {
+        lat: 12.870527, lng: 80.220409,
+        name: "Architecture block"
     },
-    "IRC":{
-        lat:12.872794,lng:80.221247,
-        name:"IRC"
+    "Jeppiaar Memorial": {
+        lat: 12.873247, lng: 80.221306,
+        name: "Jeppiaar Memorial"
     },
-    "Jeppiaar Memorial":{
-        lat:12.873247,lng:80.221306,
-        name:"Jeppiaar Memorial"
+    "Girls Main mess": {
+        lat: 12.875086, lng: 80.221949,
+        name: "Girls Main mess"
     },
-    "Girls Main mess":{
-        lat:12.875086,lng:80.221949,
-        name:"Girls Main mess"
+    "Main ground": {
+        lat: 12.871892, lng: 80.220650,
+        name: "Main ground"
     },
-    "Main ground":{
-        lat:12.871892,lng:80.220650,
-        name:"Main ground"
+    "Boys Main mess": {
+        lat: 12.872678, lng: 80.218808,
+        name: "Boys Main mess"
     },
-    "Boys Main mess":{
-        lat:12.872678,lng:80.218808,
-        name:"Boys Main mess"
+    "New CSE Block": {
+        lat: 12.872977, lng: 80.217516,
+        name: "New CSE Block"
     },
-    "New CSE Block":{
-        lat:12.872977,lng:80.217516,
-        name:"New CSE Block"
+    "Church": {
+        lat: 12.873973, lng: 80.218756,
+        name: "Church"
     },
-    "Church":{
-        lat:12.873973,lng:80.218756,
-        name:"Church"
-    },
-    "Dental gate":{
-        lat:12.870557,lng:80.226297,
-        name:"Dental Gate"
+    "Dental gate": {
+        lat: 12.870557, lng: 80.226297,
+        name: "Dental Gate"
     }
-
-
-
-
-
-
-
 };
 
 const campusConnections = [
@@ -266,8 +254,9 @@ const campusConnections = [
     ["9", "10"],
     ["10", "11"], ["10", "36"], ["10", "28"],
     ["11", "26"], ["11", "22"],
-    ["12", "14"],
+    ["12", "13"], ["12", "14"], // Connect node 12 to 13 and 14
     ["13", "14"], ["13", "15"],
+    ["14", "15"], // Connect node 14 to 15
     ["15", "25"],
     ["20", "36"], ["20", "38"],
     ["22", "27"],
@@ -279,7 +268,14 @@ const campusConnections = [
     ["30", "31"],
     ["31", "32"],
     ["32", "33"],
+    ["33", "24"], // Connect node 33 to 24
     ["36", "37"],
+    ["38", "20"], // Connect node 38 to 20
+    ["56", "33"], // Connect Girls Main mess (56) to Node 33
+    ["56", "38"], // Connect Girls Main mess (56) to Node 38
+    ["18", "10"], // Connect International Research Centre (18) to Node 10
+    ["18", "36"], // Connect International Research Centre (18) to Node 36
+    ["18", "54"], // Connect International Research Centre (18) to IRC (54)
 ];
 
 function addBuildingLabels() {
@@ -301,11 +297,18 @@ function addBuildingLabels() {
 }
 
 function dijkstra(startNodeId, endNodeId) {
+    // Check if nodes exist
+    if (!campusNodes[startNodeId] || !campusNodes[endNodeId]) {
+        console.error("Invalid start or end node");
+        return { path: [], distance: Infinity };
+    }
+
     const distances = {};
     const previous = {};
     const visited = new Set();
-    const queue = new Set();
+    const queue = new Set(); // Use a Set instead of PriorityQueue
 
+    // Initialize distances
     for (const nodeId in campusNodes) {
         distances[nodeId] = Infinity;
         previous[nodeId] = null;
@@ -314,9 +317,10 @@ function dijkstra(startNodeId, endNodeId) {
     distances[startNodeId] = 0;
 
     while (queue.size > 0) {
+        // Find node with smallest distance in the queue
         let current = null;
         let smallestDistance = Infinity;
-
+        
         for (const nodeId of queue) {
             if (distances[nodeId] < smallestDistance) {
                 smallestDistance = distances[nodeId];
@@ -324,13 +328,14 @@ function dijkstra(startNodeId, endNodeId) {
             }
         }
 
-        if (current === endNodeId || current === null) {
+        if (current === null || current === endNodeId) {
             break;
         }
 
         queue.delete(current);
         visited.add(current);
 
+        // Find all neighbors of current node
         const neighbors = [];
         for (const [from, to] of campusConnections) {
             if (from === current && !visited.has(to)) neighbors.push(to);
@@ -338,8 +343,12 @@ function dijkstra(startNodeId, endNodeId) {
         }
 
         for (const neighbor of neighbors) {
+            if (!queue.has(neighbor)) continue;
+            
             const fromNode = campusNodes[current];
             const toNode = campusNodes[neighbor];
+            
+            // Calculate distance between nodes
             const weight = map.distance(
                 [fromNode.lat, fromNode.lng],
                 [toNode.lat, toNode.lng]
@@ -354,17 +363,31 @@ function dijkstra(startNodeId, endNodeId) {
         }
     }
 
+    // Reconstruct path
     const path = [];
     let current = endNodeId;
 
     while (current !== null) {
         path.unshift(current);
         current = previous[current];
+        
+        // Prevent infinite loops
+        if (path.length > Object.keys(campusNodes).length) {
+            console.error("Path reconstruction loop detected");
+            return { path: [], distance: Infinity };
+        }
+    }
+
+    // Check if we found a valid path
+    if (path.length === 1 && path[0] === endNodeId && startNodeId !== endNodeId) {
+        console.error("No path found from", startNodeId, "to", endNodeId);
+        return { path: [], distance: Infinity };
     }
 
     console.log("Start node:", startNodeId);
     console.log("End node:", endNodeId);
     console.log("Calculated path:", path);
+    console.log("Path distance:", distances[endNodeId]);
 
     return {
         path: path,
@@ -451,6 +474,14 @@ function findClosestNode(position) {
         }
     }
 
+    console.log("Closest node found:", closestNodeId, "Distance:", minDistance, "meters");
+    
+    // If no node found or distance is too large, return null
+    if (minDistance > 1000) { // If more than 1km away, probably not on campus
+        console.warn("User is too far from any known node");
+        return null;
+    }
+    
     return closestNodeId;
 }
 
@@ -502,24 +533,6 @@ function showAlert(title, message, type = 'info', callback = null) {
     };
 }
 
-
-function updateArrowVisibility() {
-    const zoom = map.getZoom();
-    const showArrows = zoom >= 17; // Show arrows only at higher zoom levels
-    
-    routeArrows.forEach(arrow => {
-        if (showArrows) {
-            if (!map.hasLayer(arrow)) {
-                map.addLayer(arrow);
-            }
-        } else {
-            if (map.hasLayer(arrow)) {
-                map.removeLayer(arrow);
-            }
-        }
-    });
-}
-
 // Update the initMap function to include arrow visibility handling
 function initMap() {
     const location = [12.871362698167239, 80.225260518718];
@@ -544,15 +557,6 @@ function initMap() {
     drawCampusGraph();
     addBuildingLabels();
 
-    destinationMarker = L.marker(location, {
-        icon: L.divIcon({
-            className: 'destination-marker',
-            html: '<div style="background-color: #4E0911; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;"></div>',
-            iconSize: [24, 24]
-        }),
-        zIndexOffset: 1000
-    }).addTo(map).bindPopup("SIST Campus");
-
     accuracyCircle = L.circle(location, {
         radius: 0,
         stroke: true,
@@ -566,7 +570,7 @@ function initMap() {
     }).addTo(map);
 
     // Add event listeners AFTER the map is created
-    map.on('zoomend', function() {
+    map.on('zoomend', function () {
         updateRoadNameVisibility();
         updateArrowVisibility();
     });
@@ -767,6 +771,31 @@ function tryEnhancedTracking() {
     );
 }
 
+function smoothRotateMarker(marker, newAngle) {
+    const element = marker.getElement();
+    if (!element) return;
+
+    // Get current rotation
+    const currentRotation = marker.options.rotationAngle || 0;
+
+    // Calculate shortest rotation path
+    let rotationDiff = newAngle - currentRotation;
+    if (rotationDiff > 180) rotationDiff -= 360;
+    if (rotationDiff < -180) rotationDiff += 360;
+
+    // Apply smooth transition
+    element.style.transition = 'transform 0.3s ease';
+    marker.setRotationAngle(newAngle);
+    element.style.transform = `rotate(${newAngle}deg)`;
+
+    // Remove transition after animation completes
+    setTimeout(() => {
+        if (element) {
+            element.style.transition = '';
+        }
+    }, 300);
+}
+
 function updateAccuracyDisplay(accuracy) {
     const accuracyText = document.getElementById("accuracyText");
     const accuracyBar = document.getElementById("accuracyBar");
@@ -844,15 +873,6 @@ function handleNewPosition(position, isSingleUpdate = false) {
         }
     });
 
-    console.log('📡 Sending location to server:', {
-        userId: userPhone,
-        name: userName,
-        lat: userLat,
-        lng: userLng,
-        accuracy: position.coords.accuracy
-    });
-
-
     accuracyCircle.setLatLng(currentPosition);
     accuracyCircle.setRadius(position.coords.accuracy);
 
@@ -861,18 +881,35 @@ function handleNewPosition(position, isSingleUpdate = false) {
 
         const heading = position.coords.heading;
         if (heading && !isNaN(heading)) {
-            userMarker.setRotationAngle(heading);
+            smoothRotateMarker(userMarker, heading);
         }
     } else {
+        // Create Google Maps style arrow marker
         userMarker = L.marker(currentPosition, {
             icon: L.divIcon({
-                className: 'user-marker',
-                html: '<div style="background-color: #2c7be5; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; transform: rotate(' + (position.coords.heading || 0) + 'deg);"></div>',
-                iconSize: [20, 20]
+                className: 'user-arrow-marker',
+                html: `
+                    <div class="arrow-container">
+                        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="10" cy="10" r="8" class="simple-arrow"/>
+                            <path d="M10 4 L14 12 L10 10 L6 12 Z" class="simple-arrow-arrow"/>
+                        </svg>
+                    </div>
+                `,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
             }),
             rotationAngle: position.coords.heading || 0,
             zIndexOffset: 1001
         }).addTo(map).bindPopup("Your Location");
+
+        // Set initial rotation
+        if (position.coords.heading) {
+            const element = userMarker.getElement();
+            if (element) {
+                element.style.transform = `rotate(${position.coords.heading}deg)`;
+            }
+        }
     }
 
     if (lastKnownPosition) {
@@ -905,6 +942,25 @@ function handleNewPosition(position, isSingleUpdate = false) {
     document.getElementById("locationTitle").textContent = "Your Location";
     document.getElementById("locationSubtitle").textContent =
         `Accuracy: ±${Math.round(position.coords.accuracy)} meters`;
+}
+
+function updateUserArrowStyle(accuracy) {
+    if (!userMarker) return;
+
+    const markerElement = userMarker.getElement();
+    if (!markerElement) return;
+
+    // Remove previous accuracy classes
+    markerElement.classList.remove('high-accuracy', 'medium-accuracy', 'low-accuracy');
+
+    // Add appropriate class based on accuracy
+    if (accuracy < 10) {
+        markerElement.classList.add('high-accuracy');
+    } else if (accuracy < 25) {
+        markerElement.classList.add('medium-accuracy');
+    } else {
+        markerElement.classList.add('low-accuracy');
+    }
 }
 
 function checkIfReachedDestination() {
@@ -944,6 +1000,7 @@ function checkIfReachedDestination() {
     }
 }
 
+// Function to update the entire route and arrows
 function calculateRoute() {
     const destinationSelect = document.getElementById("destination");
     const end = destinationSelect.value;
@@ -951,8 +1008,7 @@ function calculateRoute() {
     wrongDirectionCount = 0;
     lastCorrectPosition = currentPosition;
 
-    // Clear existing arrows and route
-    clearRouteArrows();
+    // Remove existing route
     if (routePolyline) {
         map.removeLayer(routePolyline);
         routePolyline = null;
@@ -979,45 +1035,71 @@ function calculateRoute() {
     destinationMarker.setLatLng(destination);
     destinationMarker.setPopupContent(destinationSelect.options[destinationSelect.selectedIndex].text);
 
-    // Find closest nodes
+    // Find closest nodes to current position and destination
     const startNodeId = findClosestNode({ lat: currentPosition[0], lng: currentPosition[1] });
     const endNodeId = findClosestNode({ lat: destination[0], lng: destination[1] });
 
+    console.log("Routing from node", startNodeId, "to node", endNodeId);
+
     if (!startNodeId || !endNodeId) {
-        showAlert("Routing Error", "Could not find path nodes", "error");
+        showAlert("Routing Error", "Could not find your location or destination on campus", "error");
         return;
     }
 
-    // Calculate path using Dijkstra
+    // Calculate path using Dijkstra through all nodes
     const result = dijkstra(startNodeId, endNodeId);
 
-    if (result.path.length === 0) {
-        showAlert("Routing Error", "No path found to destination", "error");
+    if (result.path.length === 0 || result.distance === Infinity) {
+        // Fallback: Direct connection if no path found
+        console.warn("No path found through nodes, using direct connection");
+        
+        currentRouteDistance = map.distance(currentPosition, destination);
+        
+        // Draw direct route
+        routePolyline = L.polyline([currentPosition, destination], {
+            color: '#4E0911',
+            weight: 6,
+            opacity: 0.8,
+            lineJoin: 'round',
+            dashArray: '5, 5' // Make it dashed to indicate it's not a proper path
+        }).addTo(map);
+        
+        // Update UI
+        document.getElementById("distanceDisplay").textContent =
+            `Distance to destination: ${Math.round(currentRouteDistance)} meters (direct path)`;
+        document.getElementById("distanceDisplay").style.display = "block";
+        
+        // Show warning
+        document.getElementById("stepsContainer").innerHTML = `
+            <div class="step">
+                <div class="step-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>No detailed path found. Following direct route to destination.</div>
+                </div>
+            </div>
+        `;
+        
         return;
     }
 
     currentRouteDistance = result.distance;
 
-    // Build the path coordinates
+    // Build the path coordinates through all nodes
     const pathCoords = [];
 
     // 1. Start with current position
     pathCoords.push(currentPosition);
-
-    // 2. Connect to the first node in path
-    const firstNode = campusNodes[result.path[0]];
-    pathCoords.push([firstNode.lat, firstNode.lng]);
-
-    // 3. Add all intermediate nodes in the calculated path
-    for (let i = 1; i < result.path.length; i++) {
+    
+    // 2. Add all nodes in the calculated path
+    for (let i = 0; i < result.path.length; i++) {
         const node = campusNodes[result.path[i]];
         pathCoords.push([node.lat, node.lng]);
     }
 
-    // 4. Connect to the destination
+    // 3. End with destination
     pathCoords.push(destination);
 
-    // Draw new route following node connections
+    // Draw the complete route following node connections
     routePolyline = L.polyline(pathCoords, {
         color: '#4E0911',
         weight: 6,
@@ -1025,9 +1107,6 @@ function calculateRoute() {
         lineJoin: 'round',
         smoothFactor: 1.0
     }).addTo(map);
-
-    // Add arrows along the route
-    addRouteArrows(pathCoords);
 
     // Update UI
     document.getElementById("distanceDisplay").textContent =
@@ -1037,7 +1116,7 @@ function calculateRoute() {
     // Generate directions
     generateDirections(result, pathCoords);
     updateRoadNameVisibility();
-    
+
     // Fit map to show the entire route with some padding
     const bounds = routePolyline.getBounds();
     map.fitBounds(bounds, {
@@ -1045,104 +1124,104 @@ function calculateRoute() {
     });
 }
 
-function addRouteArrows(pathCoords) {
-    // Clear any existing arrows
-    clearRouteArrows();
+function visualizeAllNodes() {
+    // Clear existing debug markers
+    const debugMarkers = [];
     
-    const arrowSpacing = 30; // Reduced spacing for more frequent arrows
-    let accumulatedDistance = 0;
-    
-    for (let i = 0; i < pathCoords.length - 1; i++) {
-        const start = pathCoords[i];
-        const end = pathCoords[i + 1];
-        const segmentDistance = map.distance(start, end);
-        const segmentBearing = calculateBearing(start[0], start[1], end[0], end[1]);
-        
-        // Calculate how many arrows to place on this segment
-        const numArrows = Math.max(1, Math.floor(segmentDistance / arrowSpacing));
-        
-        for (let j = 1; j <= numArrows; j++) {
-            const ratio = j / (numArrows + 1);
-            const arrowLat = start[0] + (end[0] - start[0]) * ratio;
-            const arrowLng = start[1] + (end[1] - start[1]) * ratio;
-            
-            // Get the appropriate arrow icon based on bearing
-            const arrowIcon = getDirectionArrow(segmentBearing);
-            
-            // Create arrow marker with proper rotation
-            const arrowMarker = L.marker([arrowLat, arrowLng], {
-                icon: L.divIcon({
-                    className: 'route-arrow',
-                    html: `<div style="transform: rotate(${segmentBearing}deg);">
-                             <i class="fas ${arrowIcon}"></i>
-                           </div>`,
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 12]
-                }),
-                interactive: false,
-                zIndexOffset: 1000
-            }).addTo(map);
-            
-            routeArrows.push(arrowMarker);
-        }
-        
-        accumulatedDistance += segmentDistance;
-    }
-    
-    // Add a special arrow near the destination
-    if (pathCoords.length > 1) {
-        const lastSegmentStart = pathCoords[pathCoords.length - 2];
-        const destination = pathCoords[pathCoords.length - 1];
-        const destBearing = calculateBearing(lastSegmentStart[0], lastSegmentStart[1], destination[0], destination[1]);
-        
-        // Get the appropriate arrow icon for destination
-        const destArrowIcon = getDirectionArrow(destBearing);
-        
-        // Position arrow closer to destination
-        const ratio = 0.8; // 80% towards destination from last point
-        const arrowLat = lastSegmentStart[0] + (destination[0] - lastSegmentStart[0]) * ratio;
-        const arrowLng = lastSegmentStart[1] + (destination[1] - lastSegmentStart[1]) * ratio;
-        
-        const finalArrow = L.marker([arrowLat, arrowLng], {
+    // Add markers for all nodes
+    for (const nodeId in campusNodes) {
+        const node = campusNodes[nodeId];
+        const marker = L.marker([node.lat, node.lng], {
             icon: L.divIcon({
-                className: 'route-arrow final-arrow',
-                html: `<div style="transform: rotate(${destBearing}deg);">
-                         <i class="fas ${destArrowIcon}" style="color: #4E0911; font-size: 24px;"></i>
-                       </div>`,
-                iconSize: [28, 28],
-                iconAnchor: [14, 14]
-            }),
-            interactive: false,
-            zIndexOffset: 1001
+                className: 'debug-marker',
+                html: `<div style="background-color: red; width: 8px; height: 8px; border-radius: 50%;"></div>`,
+                iconSize: [8, 8]
+            })
         }).addTo(map);
         
-        routeArrows.push(finalArrow);
+        // Add popup with node ID
+        marker.bindPopup(`Node ${nodeId}: ${node.name}`);
+        debugMarkers.push(marker);
     }
+    
+    // Return function to remove debug markers
+    return function() {
+        debugMarkers.forEach(marker => map.removeLayer(marker));
+    };
 }
 
-function clearRouteArrows() {
-    routeArrows.forEach(arrow => {
-        if (map.hasLayer(arrow)) {
-            map.removeLayer(arrow);
-        }
+// Add to your initMap function for debugging:
+// const removeDebugMarkers = visualizeAllNodes();
+// setTimeout(removeDebugMarkers, 5000); // Remove after 5 seconds
+
+// Update the initMap function to remove arrow-related event listeners
+function initMap() {
+    const location = [12.872890526536645, 80.22607288181399];
+
+    map = L.map('map', {
+        center: location,
+        zoom: 19,
+        zoomControl: false,
+        preferCanvas: true,
+        touchZoom: true,
+        doubleClickZoom: true,
+        boxZoom: true,
+        scrollWheelZoom: true,
+        dragging: true,
+        keyboard: true,
+        tap: true,
+        attributionControl: false
     });
-    routeArrows = [];
+
+    changeTheme('satellite');
+
+    drawCampusGraph();
+    addBuildingLabels();
+
+    destinationMarker = L.marker(location, {
+        icon: L.divIcon({
+            className: 'destination-marker',
+            html: '<div style="background-color: #4E0911; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;"></div>',
+            iconSize: [24, 24]
+        }),
+        zIndexOffset: 1000
+    }).addTo(map).bindPopup("Sathyabama University");
+
+    accuracyCircle = L.circle(location, {
+        radius: 0,
+        stroke: true,
+        color: '#2c7be5',
+        weight: 1,
+        opacity: 0.4,
+        fill: true,
+        fillColor: '#2c7be5',
+        fillOpacity: 0.2,
+        zIndex: 999
+    }).addTo(map);
+
+    // Remove arrow visibility update from zoomend event
+    map.on('zoomend', function () {
+        updateRoadNameVisibility();
+    });
+
+    locateUserWithRetry(3);
+    setupEventListeners();
 }
 
 // Helper function to calculate bearing between two points
 function calculateBearing(lat1, lng1, lat2, lng2) {
     const toRad = deg => deg * Math.PI / 180;
     const toDeg = rad => rad * 180 / Math.PI;
-    
+
     const φ1 = toRad(lat1);
     const φ2 = toRad(lat2);
     const Δλ = toRad(lng2 - lng1);
-    
+
     const y = Math.sin(Δλ) * Math.cos(φ2);
     const x = Math.cos(φ1) * Math.sin(φ2) -
-            Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+        Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
     const θ = Math.atan2(y, x);
-    
+
     return (toDeg(θ) + 360) % 360;
 }
 
@@ -1173,7 +1252,7 @@ function generateDirections(result, pathCoords) {
     let stepNumber = 1;
     let totalDistance = 0;
 
-    // Create start step
+    // Create start step - from current position to first node
     const startStep = document.createElement("div");
     startStep.className = "step";
 
@@ -1184,16 +1263,15 @@ function generateDirections(result, pathCoords) {
     const startText = document.createElement("div");
     startText.className = "step-text";
 
-    // Add arrow icon for start
     const startArrow = document.createElement("div");
     startArrow.className = "step-arrow";
-    startArrow.innerHTML = '<i class="fas fa-play"></i>'; // Start arrow
+    startArrow.innerHTML = '<i class="fas fa-play"></i>';
 
     const firstNode = campusNodes[result.path[0]];
     const distanceToFirstNode = map.distance(currentPosition, [firstNode.lat, firstNode.lng]);
     totalDistance += distanceToFirstNode;
 
-    startText.textContent = `Walk to ${firstNode.name}`;
+    startText.textContent = `Head to ${firstNode.name}`;
 
     const startInfo = document.createElement("div");
     startInfo.className = "step-distance";
@@ -1201,11 +1279,11 @@ function generateDirections(result, pathCoords) {
     startText.appendChild(startInfo);
 
     startStep.appendChild(startNumber);
-    startStep.appendChild(startArrow); // Add arrow
+    startStep.appendChild(startArrow);
     startStep.appendChild(startText);
     stepsContainer.appendChild(startStep);
 
-    // Generate steps for each segment of the path
+    // Generate steps for each road segment between nodes
     for (let i = 0; i < result.path.length - 1; i++) {
         const fromNodeId = result.path[i];
         const toNodeId = result.path[i + 1];
@@ -1218,7 +1296,7 @@ function generateDirections(result, pathCoords) {
             fromNode.lat, fromNode.lng,
             toNode.lat, toNode.lng
         );
-        
+
         // Get the appropriate arrow based on bearing
         const arrowIcon = getDirectionArrow(bearing);
 
@@ -1240,14 +1318,18 @@ function generateDirections(result, pathCoords) {
         stepNum.className = "step-number";
         stepNum.textContent = stepNumber++;
 
-        // Add direction arrow
         const stepArrow = document.createElement("div");
         stepArrow.className = "step-arrow";
         stepArrow.innerHTML = `<i class="fas ${arrowIcon}"></i>`;
 
         const stepText = document.createElement("div");
         stepText.className = "step-text";
-        stepText.textContent = `Follow ${roadName}`;
+        
+        if (i === 0) {
+            stepText.textContent = `Continue on ${roadName}`;
+        } else {
+            stepText.textContent = `Follow ${roadName}`;
+        }
 
         const stepInfo = document.createElement("div");
         stepInfo.className = "step-distance";
@@ -1255,12 +1337,12 @@ function generateDirections(result, pathCoords) {
 
         stepText.appendChild(stepInfo);
         step.appendChild(stepNum);
-        step.appendChild(stepArrow); // Add arrow
+        step.appendChild(stepArrow);
         step.appendChild(stepText);
         stepsContainer.appendChild(step);
     }
 
-    // Create destination step
+    // Create destination step - from last node to final destination
     const destStep = document.createElement("div");
     destStep.className = "step";
 
@@ -1268,7 +1350,6 @@ function generateDirections(result, pathCoords) {
     destNumber.className = "step-number";
     destNumber.textContent = stepNumber;
 
-    // Add destination icon
     const destArrow = document.createElement("div");
     destArrow.className = "step-arrow";
     destArrow.innerHTML = '<i class="fas fa-flag-checkered"></i>';
@@ -1280,11 +1361,11 @@ function generateDirections(result, pathCoords) {
     const lastNode = campusNodes[lastNodeId];
     const finalDistance = map.distance(
         [lastNode.lat, lastNode.lng],
-        pathCoords[pathCoords.length - 1]
+        destination
     );
     totalDistance += finalDistance;
 
-    destText.textContent = "Walk to your destination";
+    destText.textContent = "Arrive at your destination";
 
     const destInfo = document.createElement("div");
     destInfo.className = "step-distance";
@@ -1307,34 +1388,33 @@ function generateDirections(result, pathCoords) {
 function calculateBearing(lat1, lng1, lat2, lng2) {
     const toRad = deg => deg * Math.PI / 180;
     const toDeg = rad => rad * 180 / Math.PI;
-    
+
     const φ1 = toRad(lat1);
     const φ2 = toRad(lat2);
     const Δλ = toRad(lng2 - lng1);
-    
+
     const y = Math.sin(Δλ) * Math.cos(φ2);
     const x = Math.cos(φ1) * Math.sin(φ2) -
-            Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+        Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
     const θ = Math.atan2(y, x);
-    
+
     return (toDeg(θ) + 360) % 360;
 }
 
 // Helper function to get appropriate arrow based on bearing
 function getDirectionArrow(bearing) {
-    // Map bearing to arrow icons
-    if (bearing >= 337.5 || bearing < 22.5) return 'fa-arrow-up';         // North
-    if (bearing >= 22.5 && bearing < 67.5) return 'fa-arrow-up-right';    // Northeast
-    if (bearing >= 67.5 && bearing < 112.5) return 'fa-arrow-right';      // East
-    if (bearing >= 112.5 && bearing < 157.5) return 'fa-arrow-down-right'; // Southeast
-    if (bearing >= 157.5 && bearing < 202.5) return 'fa-arrow-down';      // South
-    if (bearing >= 202.5 && bearing < 247.5) return 'fa-arrow-down-left'; // Southwest
-    if (bearing >= 247.5 && bearing < 292.5) return 'fa-arrow-left';      // West
-    if (bearing >= 292.5 && bearing < 337.5) return 'fa-arrow-up-left';   // Northwest
-    
-    return 'fa-arrow-right'; // Default
-}
+    // This is only used for the directions panel, not for map arrows
+    if (bearing >= 337.5 || bearing < 22.5) return 'fa-arrow-up';
+    if (bearing >= 22.5 && bearing < 67.5) return 'fa-arrow-up-right';
+    if (bearing >= 67.5 && bearing < 112.5) return 'fa-arrow-right';
+    if (bearing >= 112.5 && bearing < 157.5) return 'fa-arrow-down-right';
+    if (bearing >= 157.5 && bearing < 202.5) return 'fa-arrow-down';
+    if (bearing >= 202.5 && bearing < 247.5) return 'fa-arrow-down-left';
+    if (bearing >= 247.5 && bearing < 292.5) return 'fa-arrow-left';
+    if (bearing >= 292.5 && bearing < 337.5) return 'fa-arrow-up-left';
 
+    return 'fa-arrow-right';
+}
 function toggleFullscreen() {
     if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen();

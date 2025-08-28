@@ -429,8 +429,8 @@ body {
 .building-label-text {
     background-color: rgba(78, 9, 17, 0.8);
     color: white;
-    padding: 5px 15px; /* Increased horizontal padding */
-    border-radius: 9999px; /* Creates pill shape (50% would make perfect circles) */
+    padding: 5px 15px;
+    border-radius: 9999px;
     font-size: 12px;
     font-weight: bold;
     text-align: center;
@@ -447,105 +447,71 @@ body {
     box-sizing: border-box;
 }
 
-.path-label-text {
-    display: inline-block;
-    transform-origin: center center;
-    white-space: nowrap;
-    text-shadow: 
-        -1px -1px 0 white,
-        1px -1px 0 white,
-        -1px 1px 0 white,
-        1px 1px 0 white;
-    color: #4E0911;
-    font-weight: bold;
-    font-size: 12px;
-}
-
-.route-arrow {
+.user-arrow-marker {
     background: transparent !important;
     border: none !important;
 }
 
-.route-arrow i {
-    color: #4E0911;
-    font-size: 20px;
-    text-shadow: 0 0 3px white, 0 0 3px white, 0 0 3px white;
-    transition: transform 0.3s ease;
-}
-
-.final-arrow i {
-    color: #4E0911;
-    font-size: 24px;
-    animation: pulse-arrow 1.5s infinite;
-}
-
-@keyframes pulse-arrow {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-}
-
-/* Step arrow styles */
-.step-arrow {
-    margin-right: 12px;
-    color: #4E0911;
-    width: 20px;
-    text-align: center;
-    flex-shrink: 0;
-}
-
-.step-arrow i {
-    font-size: 16px;
-}
-
-.step {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-    padding: 8px;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
-.step-number {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: #4E0911;
-    color: white;
+.arrow-container {
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    margin-right: 12px;
-    flex-shrink: 0;
+    transition: transform 0.2s ease;
 }
 
-.step-text {
-    flex-grow: 1;
-    font-weight: 500;
+.arrow-container svg {
+    width: 100%;
+    height: 100%;
 }
 
-.step-distance {
-    font-size: 0.85em;
-    color: #666;
-    margin-top: 4px;
+/* Google Maps style */
+.simple-arrow {
+    fill: #1a73e8;
 }
 
-.total-distance {
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #ddd;
-    font-weight: bold;
-    text-align: center;
+.simple-arrow-arrow {
+    fill: #ffffff;
 }
 
-.user-marker {
+/* Subtle pulsing effect */
+@keyframes googlePulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.arrow-container {
+    animation: googlePulse 2s infinite;
+}
+
+.debug-marker {
     background: transparent !important;
     border: none !important;
 }
 
-.user-marker .fas {
-    text-shadow: 0 0 3px #2c7be5, 0 0 3px #2c7be5, 0 0 3px #2c7be5;
-    transition: transform 0.3s ease;
+.step-warning {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 5px;
+    color: #856404;
+    margin: 10px 0;
+}
+
+.step-warning i {
+    margin-right: 10px;
+    font-size: 1.2em;
 }
