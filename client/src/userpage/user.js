@@ -244,38 +244,80 @@ const buildingLabels = {
 };
 
 const campusConnections = [
-    ["1", "7"], ["1", "12"], ["1", "8"],
-    ["2", "15"], ["2", "14"],
-    ["3", "4"], ["3", "6"], ["3", "25"],
-    ["4", "5"],
-    ["5", "6"], ["5", "9"],
-    ["6", "11"],
-    ["8", "9"], ["8", "37"],
+    // Main pathways and core connections
+    ["1", "7"], ["1", "12"], ["1", "8"], ["1", "46"], // Main Arch connections
+    ["2", "15"], ["2", "14"], ["2", "63"], // Dental Gate connections
+    ["3", "4"], ["3", "6"], ["3", "25"], ["3", "48"], // Dental Block connections
+    ["4", "5"], ["4", "40"], ["4", "49"], // Hospital connections
+    ["5", "6"], ["5", "9"], ["5", "51"], // Ocean Research Park connections
+    ["6", "11"], ["6", "50"], // St. Paul's connections
+    ["7", "46"], // Main Arch to Node 7
+    ["8", "9"], ["8", "37"], ["8", "55"], // Jeppiaar Memorial connections
     ["9", "10"],
-    ["10", "11"], ["10", "36"], ["10", "28"],
-    ["11", "26"], ["11", "22"],
-    ["12", "13"], ["12", "14"], // Connect node 12 to 13 and 14
+    ["10", "11"], ["10", "36"], ["10", "28"], ["10", "18"], ["10", "54"], // IRC connections
+    ["11", "26"], ["11", "22"], ["11", "52"], // Open Area Theatre connections
+    ["12", "13"], ["12", "14"], ["12", "47"], // SCAS Canteen connections
     ["13", "14"], ["13", "15"],
-    ["14", "15"], // Connect node 14 to 15
+    ["14", "15"],
     ["15", "25"],
-    ["20", "36"], ["20", "38"],
-    ["22", "27"],
-    ["23", "27"],
-    ["24", "33"],
-    ["27", "28"],
-    ["28", "29"],
+    ["16", "17"], ["16", "62"], // Startup Cell to Church
+    ["17", "35"], ["17", "62"], // Central Library connections
+    ["18", "10"], ["18", "36"], ["18", "54"], // IRC connections
+    ["19", "51"], ["19", "34"], // Ocean Research Park building
+    ["20", "36"], ["20", "38"], ["20", "44"], // Block 1 & ECE Tower Lab
+    ["21", "34"], // Remibai Auditorium
+    ["22", "27"], ["22", "41"], ["22", "57"], // Indoor Stadium & Main Ground
+    ["23", "27"], ["23", "43"], // Boys Hostel connections
+    ["24", "33"], ["24", "56"], // Girls Hostel to Girls Main Mess
+    ["25", "48"], // Dental Block
+    ["26", "53"], // Architecture Block
+    ["27", "28"], ["27", "43"], // Boys Hostel to Nodes
+    ["28", "29"], ["28", "45"], // Main Canteen connection
     ["29", "30"],
-    ["30", "31"],
-    ["31", "32"],
+    ["30", "31"], ["30", "60"], // Boys Main Mess
+    ["31", "32"], ["31", "61"], // New CSE Block
     ["32", "33"],
-    ["33", "24"], // Connect node 33 to 24
-    ["36", "37"],
-    ["38", "20"], // Connect node 38 to 20
-    ["56", "33"], // Connect Girls Main mess (56) to Node 33
-    ["56", "38"], // Connect Girls Main mess (56) to Node 38
-    ["18", "10"], // Connect International Research Centre (18) to Node 10
-    ["18", "36"], // Connect International Research Centre (18) to Node 36
-    ["18", "54"], // Connect International Research Centre (18) to IRC (54)
+    ["33", "24"], ["33", "56"], // Girls Hostel area
+    ["34", "17"], ["34", "21"], ["34", "35"], // Library and Auditorium area
+    ["35", "17"], // Central Library to Node 35
+    ["36", "37"], ["36", "20"], ["36", "39"], ["36", "55"], // Admin Block & Jeppiaar Memorial
+    ["37", "8"], ["37", "36"], ["37", "39"], // Admin Block connections
+    ["38", "20"], ["38", "56"], // Girls Main Mess to Block 1
+    ["39", "36"], ["39", "37"], ["39", "55"], // Admin Block core connections
+    ["40", "4"], ["40", "49"], // Hospital buildings
+    ["41", "22"], ["41", "57"], // Main Ground
+    ["42", "61"], // Law College Ground to New CSE Block
+    ["43", "23"], ["43", "27"], // Boys Hostel
+    ["44", "20"], // ECE Tower Lab to Block 1
+    ["45", "28"], // Main Canteen to Node 28
+    ["46", "1"], ["46", "7"], // Main Arch
+    ["47", "12"], // SCAS Canteen to Node 12
+    ["48", "3"], ["48", "25"], // Dental Block to nodes
+    ["49", "4"], ["49", "40"], // General Hospital
+    ["50", "6"], // St. Paul's to Node 6
+    ["51", "5"], ["51", "19"], // Ocean Research Park
+    ["52", "11"], // Open Area Theatre to Node 11
+    ["53", "26"], // Architecture Block to Node 26
+    ["54", "10"], ["54", "18"], // IRC building
+    ["55", "8"], ["55", "36"], ["55", "39"], // Jeppiaar Memorial
+    ["56", "24"], ["56", "33"], ["56", "38"], // Girls Main Mess
+    ["57", "22"], ["57", "41"], // Main Ground (duplicate)
+    ["60", "30"], // Boys Main Mess to Node 30
+    ["61", "31"], ["61", "42"], // New CSE Block
+    ["62", "16"], ["62", "17"], // Church to Startup Cell & Library
+    ["63", "2"], // Dental Gate to Node 2
+
+    // Additional cross-campus connections for better routing
+    ["7", "46"], // Strengthen Main Arch area
+    ["13", "47"], // Connect SCAS Canteen to Node 13
+    ["17", "35"], // Central Library to Node 35
+    ["22", "52"], // Indoor Stadium to Open Area Theatre
+    ["28", "45"], // Node 28 to Main Canteen
+    ["34", "19"], // Node 34 to Ocean Research Park
+    ["35", "62"], // Node 35 to Church
+    ["41", "57"], // Main Ground reinforcement
+    ["43", "60"], // Boys Hostel to Boys Main Mess
+    ["45", "29"], // Main Canteen to Node 29
 ];
 
 function addBuildingLabels() {
@@ -320,7 +362,7 @@ function dijkstra(startNodeId, endNodeId) {
         // Find node with smallest distance in the queue
         let current = null;
         let smallestDistance = Infinity;
-        
+
         for (const nodeId of queue) {
             if (distances[nodeId] < smallestDistance) {
                 smallestDistance = distances[nodeId];
@@ -344,10 +386,10 @@ function dijkstra(startNodeId, endNodeId) {
 
         for (const neighbor of neighbors) {
             if (!queue.has(neighbor)) continue;
-            
+
             const fromNode = campusNodes[current];
             const toNode = campusNodes[neighbor];
-            
+
             // Calculate distance between nodes
             const weight = map.distance(
                 [fromNode.lat, fromNode.lng],
@@ -370,7 +412,7 @@ function dijkstra(startNodeId, endNodeId) {
     while (current !== null) {
         path.unshift(current);
         current = previous[current];
-        
+
         // Prevent infinite loops
         if (path.length > Object.keys(campusNodes).length) {
             console.error("Path reconstruction loop detected");
@@ -401,26 +443,26 @@ function showWrongDirectionAlert() {
     }
 
     const alertHTML = `
-        <div class="alert-overlay" id="wrongDirectionAlert">
-            <div class="alert-box">
-                <div class="alert-header">
-                    <div class="alert-title">Wrong Direction</div>
-                    <button class="alert-close" id="closeWrongDirectionAlert">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="alert-content">
-                    <div class="alert-icon">
-                        <i class="fas fa-exclamation-triangle"></i>
+            <div class="alert-overlay" id="wrongDirectionAlert">
+                <div class="alert-box">
+                    <div class="alert-header">
+                        <div class="alert-title">Wrong Direction</div>
+                        <button class="alert-close" id="closeWrongDirectionAlert">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
-                    <div>You're going the wrong way! Please check your route.</div>
-                </div>
-                <div class="alert-footer">
-                    <button class="alert-button" id="confirmWrongDirectionAlert">OK</button>
+                    <div class="alert-content">
+                        <div class="alert-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div>You're going the wrong way! Please check your route.</div>
+                    </div>
+                    <div class="alert-footer">
+                        <button class="alert-button" id="confirmWrongDirectionAlert">OK</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        `;
+            `;
 
     document.body.insertAdjacentHTML('beforeend', alertHTML);
 
@@ -475,13 +517,13 @@ function findClosestNode(position) {
     }
 
     console.log("Closest node found:", closestNodeId, "Distance:", minDistance, "meters");
-    
+
     // If no node found or distance is too large, return null
     if (minDistance > 1000) { // If more than 1km away, probably not on campus
         console.warn("User is too far from any known node");
         return null;
     }
-    
+
     return closestNodeId;
 }
 
@@ -889,13 +931,13 @@ function handleNewPosition(position, isSingleUpdate = false) {
             icon: L.divIcon({
                 className: 'user-arrow-marker',
                 html: `
-                    <div class="arrow-container">
-                        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="10" cy="10" r="8" class="simple-arrow"/>
-                            <path d="M10 4 L14 12 L10 10 L6 12 Z" class="simple-arrow-arrow"/>
-                        </svg>
-                    </div>
-                `,
+                        <div class="arrow-container">
+                            <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="10" cy="10" r="8" class="simple-arrow"/>
+                                <path d="M10 4 L14 12 L10 10 L6 12 Z" class="simple-arrow-arrow"/>
+                            </svg>
+                        </div>
+                    `,
                 iconSize: [24, 24],
                 iconAnchor: [12, 12]
             }),
@@ -1000,6 +1042,68 @@ function checkIfReachedDestination() {
     }
 }
 
+function checkUserDirection(position) {
+    if (!routePolyline || !currentPosition || !lastCorrectPosition) return;
+    
+    // Get the user's current heading
+    const userHeading = position.coords.heading;
+    if (!userHeading || isNaN(userHeading)) return;
+    
+    // Find the closest point on the route to the user
+    const routePoints = routePolyline.getLatLngs();
+    let closestPoint = null;
+    let minDistance = Infinity;
+    
+    for (const point of routePoints) {
+        const distance = map.distance(
+            [currentPosition[0], currentPosition[1]],
+            [point.lat, point.lng]
+        );
+        
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestPoint = point;
+        }
+    }
+    
+    if (!closestPoint) return;
+    
+    // Find the next point on the route after the closest point
+    const closestIndex = routePoints.findIndex(point => 
+        point.lat === closestPoint.lat && point.lng === closestPoint.lng
+    );
+    
+    if (closestIndex === -1 || closestIndex >= routePoints.length - 1) return;
+    
+    const nextPoint = routePoints[closestIndex + 1];
+    
+    // Calculate the intended direction (bearing to next point)
+    const intendedBearing = calculateBearing(
+        currentPosition[0], currentPosition[1],
+        nextPoint.lat, nextPoint.lng
+    );
+    
+    // Calculate the difference between user heading and intended bearing
+    let directionDiff = Math.abs(userHeading - intendedBearing);
+    if (directionDiff > 180) {
+        directionDiff = 360 - directionDiff;
+    }
+    
+    // Check if user is going in the wrong direction
+    if (directionDiff > 90) { // More than 90 degrees off course
+        wrongDirectionCount++;
+        
+        if (wrongDirectionCount >= WRONG_DIRECTION_THRESHOLD) {
+            showWrongDirectionAlert();
+            wrongDirectionCount = 0; // Reset counter after alert
+        }
+    } else {
+        // Reset counter if going in right direction
+        wrongDirectionCount = Math.max(0, wrongDirectionCount - 1);
+        lastCorrectPosition = currentPosition;
+    }
+}
+
 // Function to update the entire route and arrows
 function calculateRoute() {
     const destinationSelect = document.getElementById("destination");
@@ -1041,8 +1145,42 @@ function calculateRoute() {
 
     console.log("Routing from node", startNodeId, "to node", endNodeId);
 
-    if (!startNodeId || !endNodeId) {
-        showAlert("Routing Error", "Could not find your location or destination on campus", "error");
+    // Handle case where user is not near any campus node
+    if (!startNodeId) {
+        // User is not on campus, use direct route
+        console.warn("User not on campus, using direct route");
+        
+        currentRouteDistance = map.distance(currentPosition, destination);
+
+        // Draw direct route
+        routePolyline = L.polyline([currentPosition, destination], {
+            color: '#4E0911',
+            weight: 6,
+            opacity: 0.8,
+            lineJoin: 'round',
+            dashArray: '5, 5'
+        }).addTo(map);
+
+        // Update UI
+        document.getElementById("distanceDisplay").textContent =
+            `Distance to destination: ${Math.round(currentRouteDistance)} meters (direct path)`;
+        document.getElementById("distanceDisplay").style.display = "block";
+
+        // Show warning
+        document.getElementById("stepsContainer").innerHTML = `
+                <div class="step">
+                    <div class="step-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>You appear to be off-campus. Following direct route to destination.</div>
+                    </div>
+                </div>
+            `;
+
+        return;
+    }
+
+    if (!endNodeId) {
+        showAlert("Routing Error", "Could not find destination on campus", "error");
         return;
     }
 
@@ -1052,33 +1190,33 @@ function calculateRoute() {
     if (result.path.length === 0 || result.distance === Infinity) {
         // Fallback: Direct connection if no path found
         console.warn("No path found through nodes, using direct connection");
-        
+
         currentRouteDistance = map.distance(currentPosition, destination);
-        
+
         // Draw direct route
         routePolyline = L.polyline([currentPosition, destination], {
             color: '#4E0911',
             weight: 6,
             opacity: 0.8,
             lineJoin: 'round',
-            dashArray: '5, 5' // Make it dashed to indicate it's not a proper path
+            dashArray: '5, 5'
         }).addTo(map);
-        
+
         // Update UI
         document.getElementById("distanceDisplay").textContent =
             `Distance to destination: ${Math.round(currentRouteDistance)} meters (direct path)`;
         document.getElementById("distanceDisplay").style.display = "block";
-        
+
         // Show warning
         document.getElementById("stepsContainer").innerHTML = `
-            <div class="step">
-                <div class="step-warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <div>No detailed path found. Following direct route to destination.</div>
+                <div class="step">
+                    <div class="step-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>No detailed path found. Following direct route to destination.</div>
+                    </div>
                 </div>
-            </div>
-        `;
-        
+            `;
+
         return;
     }
 
@@ -1089,7 +1227,7 @@ function calculateRoute() {
 
     // 1. Start with current position
     pathCoords.push(currentPosition);
-    
+
     // 2. Add all nodes in the calculated path
     for (let i = 0; i < result.path.length; i++) {
         const node = campusNodes[result.path[i]];
@@ -1124,10 +1262,12 @@ function calculateRoute() {
     });
 }
 
+
+
 function visualizeAllNodes() {
     // Clear existing debug markers
     const debugMarkers = [];
-    
+
     // Add markers for all nodes
     for (const nodeId in campusNodes) {
         const node = campusNodes[nodeId];
@@ -1138,14 +1278,14 @@ function visualizeAllNodes() {
                 iconSize: [8, 8]
             })
         }).addTo(map);
-        
+
         // Add popup with node ID
         marker.bindPopup(`Node ${nodeId}: ${node.name}`);
         debugMarkers.push(marker);
     }
-    
+
     // Return function to remove debug markers
-    return function() {
+    return function () {
         debugMarkers.forEach(marker => map.removeLayer(marker));
     };
 }
@@ -1324,7 +1464,7 @@ function generateDirections(result, pathCoords) {
 
         const stepText = document.createElement("div");
         stepText.className = "step-text";
-        
+
         if (i === 0) {
             stepText.textContent = `Continue on ${roadName}`;
         } else {
