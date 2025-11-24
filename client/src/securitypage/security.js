@@ -14,6 +14,7 @@ let currentThemeLayer;
 let destinationCheckInterval;
 let destinationReachedAlertShown = false;
 let routePolyline = null;
+let trackedUserMarkers = {};
 
 const campusNodes = {
     "1": { lat: 12.872958, lng: 80.225815, name: "Node 1" },
@@ -245,11 +246,8 @@ function initMap() {
     });
 
     changeTheme('satellite');
-
     drawCampusGraph();
-    addBuildingLabels()
-
-    let trackedUserMarkers = {};
+    addBuildingLabels();
 
     socket.on('locationUpdate', ({ phoneNumber, name, location }) => {
         console.log("📡 Received location update on client:", phoneNumber, name, location);
@@ -257,16 +255,13 @@ function initMap() {
         const { lat, lng } = location;
 
         if (!trackedUserMarkers[phoneNumber]) {
-            const marker = L.marker([lat, lng], {
+            trackedUserMarkers[phoneNumber] = L.marker([lat, lng], {
                 icon: L.divIcon({
                     className: 'tracked-user-marker',
                     html: `<div style="background-color: #${getColor(phoneNumber)}; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>`,
                     iconSize: [20, 20]
-                }),
-                zIndexOffset: 1002
+                })
             }).addTo(map).bindPopup(`👤 <b>${name}</b><br>📞 ${phoneNumber}`);
-
-            trackedUserMarkers[phoneNumber] = marker;
         } else {
             trackedUserMarkers[phoneNumber].setLatLng([lat, lng]);
         }
