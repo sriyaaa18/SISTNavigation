@@ -224,7 +224,7 @@ function showAlert(title, message, type = 'info', callback = null) {
     };
 }
 
-let socket = io('http://localhost:5000');
+let socket = io('https://sistnavigation.onrender.com');
 let trackedUserMarker = null;
 
 function initMap() {

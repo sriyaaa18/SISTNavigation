@@ -852,7 +852,7 @@ function stopTracking() {
 
 // ---------- Socket.io ----------
 
-let socket = io('http://localhost:5000');
+let socket = io('https://sistnavigation.onrender.com');
 
 // ---------- Position Handling ----------
 
