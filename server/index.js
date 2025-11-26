@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -8,12 +9,13 @@ import { Server } from 'socket.io';
 // ===== Express App Setup =====
 const app = express();
 app.use(express.json());
+dotenv.config();
 app.use(cors());
 app.use("/api/v1", userRouter);
 
 // ===== MongoDB =====
-const PORT = 5000;
-const MONGO_URI = 'mongodb://localhost:27017/Nav-Database';
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
 
 // ===== HTTP Server & Socket.IO Setup =====
 const server = http.createServer(app);
